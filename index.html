@@ -1,318 +1,467 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, Skull, Scroll, Swords, HeartCrack, Feather, ArrowRight, X } from 'lucide-react';
-
-// --- DADES DEL CONTINGUT ---
-const DATA = {
-  hero: {
-    title: "SER O NO SER",
-    subtitle: "Aquesta és la qüestió.",
-    image: "https://i.ytimg.com/vi/Oq5HKX1vicM/maxresdefault.jpg" 
-  },
-  obra: {
-    title: "L'Obra",
-    image: "https://images.unsplash.com/photo-1599940824399-b87987ce0799?q=80&w=2070&auto=format&fit=crop", // Castell fosc
-    description: "La tragèdia més famosa de la literatura anglesa. Una exploració profunda sobre la condició humana, la venjança i la mortalitat.",
-    meta: [
-      { label: "Autor", value: "William Shakespeare" },
-      { label: "Any", value: "1599–1601" },
-      { label: "Gènere", value: "Tragèdia" },
-      { label: "Ubicació", value: "Castell d'Elsinore" }
-    ],
-    context: "L'acció transcorre en un ambient fosc, fred i corrupte. Dinamarca és una presó. El conflicte neix quan el germà del rei (Claudi) mata al rei per usurpar el tron i casar-se amb la reina.",
-    themes: [
-      { title: "Venjança", desc: "El deure filial contra la moralitat cristiana." },
-      { title: "Dubte", desc: "La paràlisi per l'anàlisi. Pensar massa impedeix actuar." },
-      { title: "Bogeria", desc: "És real o és una estratègia? La línia és difusa." },
-      { title: "Mortalitat", desc: "Tots acabem sent pols, siguem reis o bufons." }
-    ]
-  },
-  trama: {
-    title: "La Trama",
-    timeline: [
-      { phase: "I. El Descobriment", desc: "L'espectre del pare revela la veritat: va ser assassinat amb verí a l'orella pel seu germà." },
-      { phase: "II. L'Estratègia", desc: "Hamlet decideix fingir bogeria ('antic disposition') per observar la cort sense aixecar sospites." },
-      { phase: "III. La Ratera", desc: "Contracta actors per representar l'assassinat davant del rei Claudi i veure la seva reacció." },
-      { phase: "IV. L'Error Tràgic", desc: "En un atac de fúria, mata Poloni amagat rere una cortina, pensant que era el rei. Això canvia-ho tot." },
-      { phase: "V. El Duel Final", desc: "Claudi manipula Laertes per un duel d'esgrima amb espasa enverinada. Tothom mor." }
-    ]
-  },
-  personatges: {
-    title: "Dramatis Personae",
-    list: [
-      { name: "Hamlet", role: "El Príncep", trait: "Malenconiós & Intel·ligent", icon: <Skull size={24}/>, desc: "El protagonista turmentat que ha de venjar el seu pare però es perd en els seus pensaments." },
-      { name: "Claudi", role: "L'Usurpador", trait: "Ambiciós & Manipulador", icon: <Scroll size={24}/>, desc: "L'antagonista principal. Va matar el seu germà per aconseguir la corona i la reina." },
-      { name: "Gertrudis", role: "La Mare", trait: "Estimada & Dèbil", icon: <HeartCrack size={24}/>, desc: "La reina, que es casa massa ràpid amb l'assassí del seu marit, provocant el fàstic de Hamlet." },
-      { name: "Ofèlia", role: "L'Enamorada", trait: "Innocent & Trencada", icon: <Feather size={24}/>, desc: "Víctima col·lateral de la bogeria de Hamlet i la manipulació del seu pare Poloni.", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/John_Everett_Millais_-_Ophelia_-_Google_Art_Project.jpg/800px-John_Everett_Millais_-_Ophelia_-_Google_Art_Project.jpg" },
-      { name: "Horaci", role: "L'Amic", trait: "Lleial & Racional", icon: <Swords size={24}/>, desc: "L'única persona en qui Hamlet confia. L'encarregat d'explicar la història." },
-    ]
-  },
-  llegat: {
-    title: "Impacte Cultural",
-    items: [
-      { title: "El Rei Lleó", meta: "Disney", desc: "Simba és Hamlet. Mufasa és el Rei mort. Scar és Claudi. Timon i Pumba són Rosencrantz i Guildenstern." },
-      { title: "Sons of Anarchy", meta: "Sèrie TV", desc: "Jax Teller troba els escrits del seu pare mort i s'enfronta al nou líder del club, casat amb la seva mare." },
-      { title: "The Northman", meta: "Cinema 2022", desc: "Una versió brutal i víking basada en la llegenda original d'Amleth, sense la poesia de Shakespeare." },
-      { title: "Hamnet", meta: "Novel·la", desc: "L'aclamada novel·la de Maggie O'Farrell sobre la mort del fill de Shakespeare que va inspirar l'obra." }
-    ]
-  }
-};
-
-// --- COMPONENT DE PÀGINA (WRAPPER) ---
-const PageLayout = ({ title, bgImage, onClose, children }) => (
-  <motion.div 
-    initial={{ opacity: 0, scale: 0.95 }}
-    animate={{ opacity: 1, scale: 1 }}
-    exit={{ opacity: 0, scale: 1.05 }}
-    transition={{ duration: 0.5 }}
-    className="fixed inset-0 z-50 bg-[#0a0a0a] text-slate-300 overflow-y-auto"
-  >
-    {/* Fons opcional */}
-    {bgImage && (
-      <div className="absolute inset-0 opacity-20 pointer-events-none">
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/80 to-transparent" />
-        <img src={bgImage} alt="" className="w-full h-full object-cover" />
-      </div>
-    )}
-
-    {/* Header Navegació */}
-    <div className="sticky top-0 z-50 flex justify-between items-center p-6 md:p-8 bg-gradient-to-b from-black/80 to-transparent">
-      <button 
-        onClick={onClose} 
-        className="group flex items-center gap-2 text-white/50 hover:text-white transition-colors uppercase tracking-widest text-sm"
-      >
-        <ChevronLeft className="group-hover:-translate-x-1 transition-transform" /> Tornar a l'inici
-      </button>
-      <span className="font-serif text-white/30 tracking-widest hidden md:block">{title.toUpperCase()}</span>
-    </div>
-
-    {/* Contingut */}
-    <div className="container mx-auto px-6 md:px-12 pb-20 max-w-5xl relative z-10">
-      <h2 className="text-5xl md:text-7xl font-serif text-white mb-12 tracking-tight">{title}</h2>
-      {children}
-    </div>
-  </motion.div>
-);
-
-export default function HamletPortfolio() {
-  const [view, setView] = useState('home'); // 'home', 'obra', 'trama', 'personatges', 'llegat'
-
-  return (
-    <div className="bg-[#050505] min-h-screen text-slate-300 font-sans selection:bg-red-900 selection:text-white overflow-hidden relative">
-      
-      <AnimatePresence mode="wait">
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hamlet | Portfolio Didàctic</title>
+    
+    <!-- Cargar React y ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    
+    <!-- Cargar Babel para entender JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Cargar Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Fuentes -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;600&display=swap');
         
-        {/* --- HOME VIEW (PORTADA CIRCULAR) --- */}
-        {view === 'home' && (
-          <motion.section 
-            key="home"
-            exit={{ opacity: 0 }}
-            className="h-screen flex flex-col items-center justify-center relative px-6"
-          >
-            {/* Títol Principal */}
-            <motion.h1 
-              layoutId="main-title"
-              className="absolute top-12 md:top-16 text-5xl md:text-7xl font-serif text-white tracking-widest z-20 text-center"
-            >
-              SER O NO SER
-            </motion.h1>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #050505;
+            color: #cbd5e1;
+            overflow-x: hidden;
+        }
+        .font-serif {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
 
-            {/* Centre Interactiu */}
-            <div className="relative w-full max-w-4xl h-[60vh] flex items-center justify-center">
-              
-              {/* Cercles Decoratius de Fons */}
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <div className="w-[500px] h-[500px] border border-white/5 rounded-full animate-pulse-slow"></div>
-                <div className="absolute w-[700px] h-[700px] border border-white/5 rounded-full opacity-30"></div>
-              </div>
+        /* Animacions */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes pulseSlow {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.05); opacity: 0.2; }
+        }
 
-              {/* Imatge Central */}
-              <motion.div 
-                initial={{ scale: 0.8, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ duration: 1 }}
-                className="relative z-10 w-64 h-64 md:w-80 md:h-80 rounded-full overflow-hidden border border-white/10 shadow-[0_0_100px_-20px_rgba(255,255,255,0.1)] group cursor-pointer"
-              >
-                <div className="absolute inset-0 bg-red-900/0 group-hover:bg-red-900/20 transition-colors duration-500 z-20 mix-blend-overlay"></div>
-                <img 
-                  src={DATA.hero.image} 
-                  alt="Hamlet" 
-                  className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700"
-                />
-              </motion.div>
+        .animate-fade-in { animation: fadeIn 1s ease-out forwards; }
+        .animate-fade-up { animation: fadeInUp 0.8s ease-out forwards; }
+        .animate-pulse-slow { animation: pulseSlow 4s infinite ease-in-out; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
 
-              {/* Enllaços Satèl·lit */}
-              {/* Esquerra - L'Obra */}
-              <motion.button
-                whileHover={{ scale: 1.1, x: 10 }}
-                onClick={() => setView('obra')}
-                className="absolute left-0 md:left-10 text-right md:text-right group flex flex-col items-end gap-2"
-              >
-                <span className="text-4xl md:text-5xl font-serif text-gray-500 group-hover:text-white transition-colors">01</span>
-                <span className="text-sm md:text-xl uppercase tracking-[0.2em] text-white">L'Obra</span>
-              </motion.button>
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
 
-              {/* Dreta - Personatges */}
-              <motion.button
-                whileHover={{ scale: 1.1, x: -10 }}
-                onClick={() => setView('personatges')}
-                className="absolute right-0 md:right-10 text-left group flex flex-col items-start gap-2"
-              >
-                <span className="text-4xl md:text-5xl font-serif text-gray-500 group-hover:text-white transition-colors">02</span>
-                <span className="text-sm md:text-xl uppercase tracking-[0.2em] text-white">Personatges</span>
-              </motion.button>
+        // --- ICONOS SVG ---
+        const Icons = {
+            ChevronLeft: ({className}) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m15 18-6-6 6-6"/></svg>,
+            ChevronDown: ({className}) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m6 9 6 6 6-6"/></svg>,
+            Skull: ({size}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="12" r="1"/><circle cx="15" cy="12" r="1"/><path d="M8 20v2h8v-2"/><path d="m12.5 17-.5-1-.5 1h1z"/><path d="M16 20a2 2 0 0 0 1.56-3.25 8 8 0 1 0-11.12 0A2 2 0 0 0 8 20"/></svg>,
+            Scroll: ({size}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M8 17.5a5 5 0 0 1 5-5c2.5 0 5 2.5 5 5v2a2 2 0 1 1-4 0v-2a3 3 0 0 0-3-3 3 3 0 0 0-3 3v2a2 2 0 1 1-4 0v-2a5 5 0 0 1 5-5z"/><path d="M8 2.5a5 5 0 0 1 5 5c2.5 0 5 2.5 5 5v2a2 2 0 1 1-4 0v-2a3 3 0 0 0-3-3 3 3 0 0 0-3 3v2a2 2 0 1 1-4 0v-2a5 5 0 0 1 5-5z"/></svg>,
+            HeartCrack: ({size}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 14c1.49-1.28 3.6-2.34 4.58-4.25a6.11 6.11 0 0 0-1.28-7.9 6.77 6.77 0 0 0-9.28.6l-1 1-1-1a6.77 6.77 0 0 0-9.28-.6 6.1 6.1 0 0 0-1.28 7.9c.98 1.91 3.09 2.97 4.58 4.25L12 21.35z"/><path d="M12 2v20"/><path d="m12 17-6-6"/><path d="m12 14 6-6"/></svg>,
+            Feather: ({size}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" x2="2" y1="8" y2="22"/><line x1="17.5" x2="9" y1="15" y2="15"/></svg>,
+            Swords: ({size}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="14.5 17.5 3 6 3 3 6 3 17.5 14.5"/><line x1="13" x2="19" y1="19" y2="13"/><line x1="16" x2="20" y1="16" y2="20"/><line x1="19" x2="21" y1="21" y2="19"/><polyline points="14.5 6.5 18 3 21 3 21 6 17.5 9.5"/><line x1="5" x2="9" y1="14" y2="18"/><line x1="7" x2="4" y1="17" y2="20"/><line x1="3" x2="5" y1="19" y2="21"/></svg>,
+            ArrowRight: ({size}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        };
 
-              {/* Baix Esquerra - Trama */}
-              <motion.button
-                whileHover={{ scale: 1.1, y: -5 }}
-                onClick={() => setView('trama')}
-                className="absolute bottom-0 md:bottom-10 left-10 md:left-32 text-center group"
-              >
-                <span className="block text-2xl font-serif text-gray-600 group-hover:text-red-500 mb-1">03</span>
-                <span className="text-xs md:text-sm uppercase tracking-widest text-gray-400 group-hover:text-white transition-colors">La Trama</span>
-              </motion.button>
+        // --- DADES ACTUALITZADES I AMPLIADES ---
+        const DATA = {
+          hero: {
+            title: "SER O NO SER",
+            subtitle: "Aquesta és la qüestió.",
+            image: "https://i.ytimg.com/vi/Oq5HKX1vicM/maxresdefault.jpg" 
+          },
+          obra: {
+            title: "L'Obra i El Context",
+            image: "https://images.squarespace-cdn.com/content/v1/507dba43c4aabcfd2216a447/1364324128962-O1TL2L81RPHNADLJ6NYZ/play+within+the+play.jpg",
+            description: "Aquest famós soliloqui pertany a 'Hamlet, príncep de Dinamarca', escrita per William Shakespeare. No és només un dubte sobre la vida, sinó una reflexió universal sobre la por a allò desconegut que ens espera després de la mort.",
+            meta: [
+              { label: "Personatge", value: "Príncep Hamlet (Acte III, Esc. 1)" },
+              { label: "Publicació", value: "1603 (Primer Quarto)" },
+              { label: "Ubicació", value: "Castell d'Elsinore (Dinamarca)" },
+              { label: "Atmosfera", value: "Fosca, opressiva i corrupta" }
+            ],
+            context: "L'obra situa l'espectador al Regne de Dinamarca, un estat podrit per la corrupció moral. Elsinore es converteix en una presó mental i física per al protagonista, on l'espionatge i la desconfiança són constants.",
+            themes: [
+              { title: "El Dubte Existencial", desc: "La paràlisi per l'anàlisi. És més noble patir els cops del destí o alçar-se en armes?" },
+              { title: "Venjança vs Justícia", desc: "El conflicte entre el deure filial de venjar el pare i la moralitat de cometre un assassinat." },
+              { title: "Aparença vs Realitat", desc: "La bogeria fingida de Hamlet contra la bogeria real d'Ofèlia. Qui està realment boig?" },
+              { title: "Corrupció Política", desc: "La podridura de l'estat causada pel crim inicial de Claudi infecta tota la cort." }
+            ]
+          },
+          trama: {
+            title: "Conflicte i Desenvolupament",
+            image: "https://news.vt.edu/content/dam/news_vt_edu/articles/2014/02/images/022014-cfa-hamlet.jpg",
+            timeline: [
+              { phase: "1. El Detonant (La Causa)", desc: "El conflicte esclata quan l'espectre del Rei mort revela a Hamlet que va ser assassinat pel seu propi germà, Claudi, amb verí a l'orella. Exigeix venjança." },
+              { phase: "2. L'Estratègia (El Dubte)", desc: "Hamlet no sap si el fantasma diu la veritat o és un dimoni. Decideix fingir bogeria per investigar Claudi sense aixecar sospites, però això l'aïlla de tothom." },
+              { phase: "3. El Clímax (La Prova)", desc: "Hamlet utilitza una obra de teatre ('La Ratera') per recrear l'assassinat. La reacció de culpabilitat de Claudi confirma la veritat. Ara Hamlet ha d'actuar." },
+              { phase: "4. L'Empitjorament (L'Error)", desc: "En un moment d'impuls, Hamlet mata Poloni (pare d'Ofèlia) pensant que era el rei. Aquest error provoca la bogeria d'Ofèlia i la fúria venjativa del seu germà Laertes." },
+              { phase: "5. La Catàstrofe (El Final)", desc: "Claudi manipula el conflicte per orquestrar un duel final. Amb espases i copes enverinades, tota la família reial i Laertes moren. Només Horaci sobreviu per explicar-ho." }
+            ]
+          },
+          personatges: {
+            title: "Anàlisi de Personatges",
+            image: "https://2ontheaisle.wordpress.com/wp-content/uploads/2014/10/hamlet-hsc-10-15-14-201.jpg",
+            list: [
+              { name: "Hamlet", role: "Protagonista", trait: "L'Home Modern", icon: <Icons.Skull size={24}/>, desc: "Representa l'intel·lectual paralitzat pel dubte. La seva tragèdia és pensar massa en un món que demana acció ràpida." },
+              { name: "Claudi", role: "Antagonista", trait: "El Maquiavèl·lic", icon: <Icons.Scroll size={24}/>, desc: "Oncle i padrastre. És l'origen del mal: va matar el seu germà per ambició política i luxúria. Manipulador expert." },
+              { name: "Gertrudis", role: "La Mare", trait: "La Feblesa", icon: <Icons.HeartCrack size={24}/>, desc: "Reina de Dinamarca. Estima el seu fill però la seva ràpida boda amb l'assassí del marit la fa còmplice moral, o potser només ingènua." },
+              { name: "Ofèlia", role: "Víctima", trait: "La Innocència Trencada", icon: <Icons.Feather size={24}/>, desc: "Filla de Poloni. Atrapada entre l'obediència al pare i l'amor per Hamlet. La pressió la porta a la bogeria real i al suïcidi." },
+              { name: "Horaci", role: "L'Aliat", trait: "La Raó", icon: <Icons.Swords size={24}/>, desc: "L'únic amic fidel. Representa l'estabilitat i el seny enmig del caos. La seva missió és mantenir viva la memòria de Hamlet." },
+            ]
+          },
+          llegat: {
+            title: "Vigència i Adaptacions",
+            image: "https://pittsburghquarterly.com/wp-content/uploads/articles/the-public-s-ambitious-hamlet-rewards-on-many-levels.jpg",
+            items: [
+              { title: "El Rei Lleó (Disney)", meta: "Adaptació Animada", desc: "La versió més accessible. Simba (Hamlet) ha de superar la culpa i l'exili per destronar el seu oncle Scar (Claudi), que va matar Mufasa (Rei Hamlet)." },
+              { title: "Sons of Anarchy", meta: "Sèrie de TV", desc: "Trasllada l'estructura shakespeariana a un club de motards. El protagonista descobreix els diaris del pare mort i s'enfronta al nou líder (el seu padrastre)." },
+              { title: "The Northman", meta: "Cinema (2022)", desc: "Recupera la llegenda escandinava original d'Amleth, la font primària de Shakespeare, mostrant la venjança en la seva forma més primitiva i brutal." },
+              { title: "Hamnet (Llibre)", meta: "Novel·la Històrica", desc: "Maggie O'Farrell explora la vida del fill real de Shakespeare, Hamnet, que va morir als 11 anys, suggerint que l'obra va ser una manera de processar el dol." }
+            ]
+          }
+        };
 
-               {/* Baix Dreta - Llegat */}
-               <motion.button
-                whileHover={{ scale: 1.1, y: -5 }}
-                onClick={() => setView('llegat')}
-                className="absolute bottom-0 md:bottom-10 right-10 md:right-32 text-center group"
-              >
-                <span className="block text-2xl font-serif text-gray-600 group-hover:text-red-500 mb-1">04</span>
-                <span className="text-xs md:text-sm uppercase tracking-widest text-gray-400 group-hover:text-white transition-colors">Llegat</span>
-              </motion.button>
-              
-            </div>
-
-            <p className="absolute bottom-8 text-white/30 text-xs tracking-widest uppercase">
-              Selecciona una secció per explorar la bogeria
-            </p>
-          </motion.section>
-        )}
-
-        {/* --- PÀGINA: L'OBRA --- */}
-        {view === 'obra' && (
-          <PageLayout title={DATA.obra.title} bgImage={DATA.obra.image} onClose={() => setView('home')}>
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-12">
-              <div className="md:col-span-4 space-y-8 border-l border-red-900/50 pl-6 h-fit">
-                {DATA.obra.meta.map((item, idx) => (
-                  <div key={idx}>
-                    <h4 className="text-xs uppercase tracking-widest text-gray-500 mb-1">{item.label}</h4>
-                    <p className="text-white font-serif text-lg">{item.value}</p>
-                  </div>
-                ))}
-              </div>
-              <div className="md:col-span-8 space-y-8">
-                <p className="text-2xl font-serif leading-relaxed text-gray-200">
-                  {DATA.obra.description}
-                </p>
-                <p className="text-gray-400 leading-relaxed max-w-2xl">
-                  {DATA.obra.context}
-                </p>
-                
-                <h3 className="text-2xl font-serif text-white mt-12 mb-6">Temes Principals</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {DATA.obra.themes.map((t, i) => (
-                    <div key={i} className="bg-white/5 p-6 border border-white/10 hover:border-white/30 transition-colors">
-                      <span className="text-red-800 font-bold mb-2 block">0{i+1}</span>
-                      <h4 className="text-white font-serif text-lg mb-2">{t.title}</h4>
-                      <p className="text-sm text-gray-500">{t.desc}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </PageLayout>
-        )}
-
-        {/* --- PÀGINA: LA TRAMA --- */}
-        {view === 'trama' && (
-          <PageLayout title={DATA.trama.title} onClose={() => setView('home')}>
-            <div className="max-w-3xl border-l border-white/10 ml-4 md:ml-0 space-y-12 pb-20">
-              {DATA.trama.timeline.map((item, i) => (
-                <motion.div 
-                  key={i}
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.1 }}
-                  className="relative pl-8 md:pl-12 group"
+        // --- COMPONENTE ESPECIAL: HERO CIRCULAR ---
+        const HeroStickySection = ({ scrollToSection }) => {
+            return (
+                 <div 
+                    id="section-hero"
+                    className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden bg-[#050505] shadow-2xl transition-transform duration-700"
+                    style={{ zIndex: 1 }}
                 >
-                  {/* Punt Timeline */}
-                  <div className="absolute -left-[5px] top-2 w-3 h-3 bg-black border border-gray-600 rounded-full group-hover:bg-red-600 group-hover:border-red-600 transition-colors"></div>
-                  
-                  <h3 className="text-2xl font-serif text-white mb-2">{item.phase}</h3>
-                  <p className="text-gray-400 leading-relaxed text-lg font-light">{item.desc}</p>
-                </motion.div>
-              ))}
+                    {/* Contingut Central */}
+                    <div className="relative w-full h-full flex flex-col items-center justify-center animate-fade-in">
+                        
+                         {/* Círculos Decorativos (Fons) */}
+                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
+                            <div className="w-[300px] h-[300px] md:w-[600px] md:h-[600px] border border-white/5 rounded-full animate-pulse-slow"></div>
+                            <div className="absolute w-[500px] h-[500px] md:w-[800px] md:h-[800px] border border-white/5 rounded-full opacity-30"></div>
+                        </div>
+
+                        {/* Título Principal */}
+                        <div className="relative z-20 text-center mb-6 md:mb-10">
+                             <h1 className="text-5xl md:text-8xl font-serif text-white tracking-widest drop-shadow-2xl opacity-90">
+                              SER O NO SER
+                            </h1>
+                            <p className="text-lg md:text-xl text-slate-500 font-serif tracking-widest uppercase mt-4 opacity-80">
+                                {DATA.hero.subtitle}
+                            </p>
+                        </div>
+
+                        {/* Contenidor Imatge Central + Botons Satèl·lit */}
+                        <div className="relative z-30 flex items-center justify-center">
+                            
+                            {/* Imagen Central Rodona */}
+                            <div className="relative w-56 h-56 md:w-80 md:h-80 rounded-full overflow-hidden border border-white/10 shadow-[0_0_100px_-20px_rgba(255,255,255,0.15)] group cursor-pointer transition-all duration-700 hover:scale-105 z-20">
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent z-10"></div>
+                                <img 
+                                  src={DATA.hero.image} 
+                                  alt="Hamlet" 
+                                  className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
+                                />
+                            </div>
+
+                            {/* --- BOTONS FLOTANTS (Satèl·lits) --- */}
+                            
+                            <button
+                                onClick={() => scrollToSection('section-obra')}
+                                className="absolute -left-16 -top-12 md:left-[-180px] md:top-0 text-right group flex flex-col items-end gap-1 z-30"
+                            >
+                                <span className="text-4xl font-serif text-white/20 group-hover:text-white transition-colors">01</span>
+                                <span className="text-xs md:text-sm uppercase tracking-[0.2em] text-white/60 group-hover:text-red-500 transition-colors">L'Obra</span>
+                            </button>
+
+                            <button
+                                onClick={() => scrollToSection('section-trama')}
+                                className="absolute -left-16 -bottom-12 md:left-[-160px] md:bottom-0 text-right group flex flex-col items-end gap-1 z-30"
+                            >
+                                <span className="text-xs md:text-sm uppercase tracking-[0.2em] text-white/60 group-hover:text-red-500 transition-colors">La Trama</span>
+                                <span className="text-4xl font-serif text-white/20 group-hover:text-white transition-colors">02</span>
+                            </button>
+
+                            <button
+                                onClick={() => scrollToSection('section-personatges')}
+                                className="absolute -right-16 -top-12 md:right-[-200px] md:top-0 text-left group flex flex-col items-start gap-1 z-30"
+                            >
+                                <span className="text-4xl font-serif text-white/20 group-hover:text-white transition-colors">03</span>
+                                <span className="text-xs md:text-sm uppercase tracking-[0.2em] text-white/60 group-hover:text-red-500 transition-colors">Personatges</span>
+                            </button>
+
+                             <button
+                                onClick={() => scrollToSection('section-llegat')}
+                                className="absolute -right-16 -bottom-12 md:right-[-140px] md:bottom-0 text-left group flex flex-col items-start gap-1 z-30"
+                            >
+                                <span className="text-xs md:text-sm uppercase tracking-[0.2em] text-white/60 group-hover:text-red-500 transition-colors">Llegat</span>
+                                <span className="text-4xl font-serif text-white/20 group-hover:text-white transition-colors">04</span>
+                            </button>
+
+                        </div>
+
+                        
+                        {/* Scroll Hint */}
+                        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 text-white/30 animate-bounce flex flex-col items-center gap-2 pointer-events-none">
+                            <span className="text-[10px] uppercase tracking-[0.3em]">Fes Scroll</span>
+                            <Icons.ChevronDown className="w-4 h-4" />
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // --- COMPONENTE: STICKY SECTION ESTÀNDARD ---
+        const StickySection = ({ id, title, img, index, onClick, subtitle }) => {
+            return (
+                <div 
+                    id={id}
+                    className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden border-t border-white/10 shadow-2xl transition-transform duration-700 bg-[#050505]"
+                    style={{ zIndex: index + 10 }}
+                >
+                    {/* Background Image with Overlay */}
+                    <div className="absolute inset-0 z-0">
+                         <div className="absolute inset-0 bg-black/60 z-10 hover:bg-black/40 transition-colors duration-700"></div>
+                         <img src={img} alt={title} className="w-full h-full object-cover scale-105" />
+                    </div>
+
+                    {/* Content */}
+                    <div className="relative z-20 text-center px-6 max-w-4xl animate-fade-up">
+                        {subtitle && <p className="text-red-500 font-serif italic text-xl md:text-2xl mb-4">{subtitle}</p>}
+                        <h2 className="text-5xl md:text-8xl font-serif text-white font-bold mb-8 tracking-tighter drop-shadow-lg">{title}</h2>
+                        
+                        <button 
+                            onClick={onClick}
+                            className="group relative inline-flex items-center gap-3 px-8 py-4 bg-white/10 hover:bg-white text-white hover:text-black border border-white/30 backdrop-blur-sm rounded-full transition-all duration-300 font-medium tracking-widest uppercase text-sm"
+                        >
+                            Explorar Secció
+                            <Icons.ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                        </button>
+                    </div>
+
+                    {/* Number Indicator */}
+                    <div className="absolute bottom-10 right-10 z-20 text-white/10 font-serif text-6xl md:text-8xl font-bold select-none">
+                        0{index - 1} 
+                    </div>
+                </div>
+            );
+        };
+
+        // --- COMPONENTE: PÀGINA DE DETALL ---
+        const DetailPage = ({ title, bgImage, onClose, children }) => (
+          <div className="fixed inset-0 z-[100] bg-[#0a0a0a] text-slate-300 overflow-y-auto animate-fade-in">
+            {/* Fondo con Overlay */}
+            <div className="fixed inset-0 pointer-events-none">
+                <div className="absolute inset-0 bg-[#0a0a0a]/90 z-10"></div>
+                {bgImage && <img src={bgImage} alt="" className="w-full h-full object-cover opacity-30" />}
             </div>
-          </PageLayout>
-        )}
 
-        {/* --- PÀGINA: PERSONATGES --- */}
-        {view === 'personatges' && (
-          <PageLayout title={DATA.personatges.title} onClose={() => setView('home')}>
-             <div className="grid grid-cols-1 gap-8">
-               {DATA.personatges.list.map((char, i) => (
-                 <motion.div 
-                   key={i}
-                   initial={{ opacity: 0, y: 20 }}
-                   whileInView={{ opacity: 1, y: 0 }}
-                   className="group relative bg-[#0f0f0f] border border-white/5 overflow-hidden flex flex-col md:flex-row"
-                 >
-                   {/* Columna Imatge (si n'hi ha) o Icona */}
-                   <div className="md:w-1/3 bg-black/40 p-8 flex items-center justify-center border-r border-white/5 relative overflow-hidden">
-                     {char.img ? (
-                       <img src={char.img} alt={char.name} className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700" />
-                     ) : (
-                       <div className="text-red-900/50 group-hover:text-red-800 transition-colors transform scale-150">
-                         {char.icon}
-                       </div>
-                     )}
-                   </div>
+            {/* Header Sticky */}
+            <div className="sticky top-0 z-50 flex justify-between items-center p-6 md:p-8 bg-black/80 backdrop-blur-md border-b border-white/10">
+              <button 
+                onClick={onClose} 
+                className="group flex items-center gap-2 text-white hover:text-red-500 transition-colors uppercase tracking-widest text-sm font-bold"
+              >
+                <Icons.ChevronLeft className="group-hover:-translate-x-1 transition-transform" /> Tornar
+              </button>
+              <span className="font-serif text-white/50 tracking-widest hidden md:block">{title.toUpperCase()}</span>
+            </div>
 
-                   {/* Columna Text */}
-                   <div className="p-8 md:w-2/3 flex flex-col justify-center">
-                      <div className="flex items-center gap-3 mb-2">
-                        <span className="text-red-600 opacity-0 group-hover:opacity-100 transition-opacity -ml-4 group-hover:ml-0 duration-300">
-                          <ArrowRight size={16}/>
-                        </span>
-                        <h3 className="text-3xl font-serif text-white">{char.name}</h3>
-                      </div>
-                      <p className="text-xs uppercase tracking-widest text-red-800/80 mb-4">{char.role} | {char.trait}</p>
-                      <p className="text-gray-500 leading-relaxed">{char.desc}</p>
-                   </div>
-                 </motion.div>
-               ))}
-             </div>
-          </PageLayout>
-        )}
+            {/* Contingut Scrollable */}
+            <div className="container mx-auto px-6 md:px-12 py-12 md:py-20 max-w-5xl relative z-20 animate-fade-up">
+              <h2 className="text-5xl md:text-7xl font-serif text-white mb-12 tracking-tight border-b border-white/10 pb-8">{title}</h2>
+              {children}
+            </div>
+          </div>
+        );
 
-        {/* --- PÀGINA: LLEGAT --- */}
-        {view === 'llegat' && (
-          <PageLayout title={DATA.llegat.title} onClose={() => setView('home')}>
-             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-               {DATA.llegat.items.map((item, i) => (
-                 <motion.div 
-                   key={i}
-                   whileHover={{ y: -5 }}
-                   className="bg-gradient-to-br from-white/5 to-transparent p-8 border-t border-white/10"
-                 >
-                   <span className="text-red-900/40 text-6xl font-serif font-bold absolute opacity-20 select-none">0{i+1}</span>
-                   <div className="relative z-10">
-                     <h4 className="text-2xl font-serif text-white mb-2">{item.title}</h4>
-                     <span className="inline-block px-2 py-1 bg-white/10 text-xs uppercase tracking-wider text-white mb-4">{item.meta}</span>
-                     <p className="text-gray-400">{item.desc}</p>
-                   </div>
-                 </motion.div>
-               ))}
-             </div>
-             <div className="mt-20 text-center border-t border-white/10 pt-12">
-               <p className="font-serif text-2xl text-white italic">"The rest is silence."</p>
-             </div>
-          </PageLayout>
-        )}
+        // --- APP PRINCIPAL ---
+        function HamletPortfolio() {
+          const [activePage, setActivePage] = useState(null); 
+          
+          useEffect(() => {
+              if (!activePage) {
+                  // No force scroll to top on close so user stays in flow
+              }
+          }, [activePage]);
 
-      </AnimatePresence>
-    </div>
-  );
-}
+          // Funció per fer scroll suau a les targetes sticky
+          const scrollToSection = (id) => {
+              const element = document.getElementById(id);
+              if (element) {
+                  element.scrollIntoView({ behavior: 'smooth' });
+              }
+          };
+
+          const renderContent = () => {
+              switch(activePage) {
+                  case 'obra':
+                      return (
+                          <div className="grid grid-cols-1 md:grid-cols-12 gap-12">
+                              <div className="md:col-span-4 space-y-8 border-l border-red-900/50 pl-6 h-fit">
+                                {DATA.obra.meta.map((item, idx) => (
+                                  <div key={idx}>
+                                    <h4 className="text-xs uppercase tracking-widest text-gray-500 mb-1">{item.label}</h4>
+                                    <p className="text-white font-serif text-lg">{item.value}</p>
+                                  </div>
+                                ))}
+                              </div>
+                              <div className="md:col-span-8 space-y-8">
+                                <p className="text-2xl font-serif leading-relaxed text-gray-200">{DATA.obra.description}</p>
+                                <div className="p-6 bg-white/5 border-l-2 border-red-800 my-6">
+                                    <p className="text-gray-300 italic">"Ser o no ser, aquesta és la qüestió..."</p>
+                                </div>
+                                <p className="text-gray-400 leading-relaxed max-w-2xl">{DATA.obra.context}</p>
+                                
+                                <h3 className="text-2xl font-serif text-white mt-12 mb-6">Temes Principals</h3>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                  {DATA.obra.themes.map((t, i) => (
+                                    <div key={i} className="bg-white/5 p-6 border border-white/10 hover:border-red-900/40 transition-colors">
+                                      <span className="text-red-800 font-bold mb-2 block">0{i+1}</span>
+                                      <h4 className="text-white font-serif text-lg mb-2">{t.title}</h4>
+                                      <p className="text-sm text-gray-500">{t.desc}</p>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                          </div>
+                      );
+                  case 'trama':
+                      return (
+                          <div className="max-w-4xl border-l border-white/10 ml-4 md:ml-0 space-y-12 pb-20">
+                            {DATA.trama.timeline.map((item, i) => (
+                              <div key={i} className="relative pl-8 md:pl-12 group">
+                                <div className="absolute -left-[5px] top-2 w-3 h-3 bg-black border border-gray-600 rounded-full group-hover:bg-red-600 group-hover:border-red-600 transition-colors"></div>
+                                <h3 className="text-2xl font-serif text-white mb-2">{item.phase}</h3>
+                                <p className="text-gray-400 leading-relaxed text-lg font-light">{item.desc}</p>
+                              </div>
+                            ))}
+                          </div>
+                      );
+                  case 'personatges':
+                      return (
+                          <div className="grid grid-cols-1 gap-8">
+                           {DATA.personatges.list.map((char, i) => (
+                             <div key={i} className="group relative bg-[#0f0f0f] border border-white/5 overflow-hidden flex flex-col md:flex-row hover:border-white/20 transition-colors">
+                               <div className="md:w-1/3 bg-black/40 min-h-[200px] relative overflow-hidden">
+                                 {char.img ? (
+                                   <img src={char.img} alt={char.name} className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700" />
+                                 ) : (
+                                   <div className="flex items-center justify-center w-full h-full text-red-900/50 group-hover:text-red-800 transition-colors">
+                                     {char.icon}
+                                   </div>
+                                 )}
+                               </div>
+                               <div className="p-8 md:w-2/3 flex flex-col justify-center">
+                                  <div className="flex items-center gap-3 mb-2">
+                                    <h3 className="text-3xl font-serif text-white">{char.name}</h3>
+                                  </div>
+                                  <p className="text-xs uppercase tracking-widest text-red-800/80 mb-4">{char.role} | {char.trait}</p>
+                                  <p className="text-gray-500 leading-relaxed">{char.desc}</p>
+                               </div>
+                             </div>
+                           ))}
+                         </div>
+                      );
+                  case 'llegat':
+                      return (
+                          <div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-20">
+                               {DATA.llegat.items.map((item, i) => (
+                                 <div key={i} className="bg-gradient-to-br from-white/5 to-transparent p-8 border-t border-white/10 hover:-translate-y-1 transition-transform">
+                                   <span className="text-red-900/40 text-6xl font-serif font-bold absolute opacity-20 select-none">0{i+1}</span>
+                                   <div className="relative z-10">
+                                     <h4 className="text-2xl font-serif text-white mb-2">{item.title}</h4>
+                                     <span className="inline-block px-2 py-1 bg-white/10 text-xs uppercase tracking-wider text-white mb-4">{item.meta}</span>
+                                     <p className="text-gray-400">{item.desc}</p>
+                                   </div>
+                                 </div>
+                               ))}
+                             </div>
+                             <div className="text-center py-20 border-t border-white/10">
+                                <Icons.Skull size={40} className="mx-auto text-white/20 mb-6" />
+                                <p className="font-serif text-3xl md:text-5xl text-white italic">"The rest is silence."</p>
+                                <p className="mt-4 text-gray-600 text-xs uppercase tracking-widest">Hamlet, Acte V, Escena II</p>
+                             </div>
+                          </div>
+                      );
+                  default: return null;
+              }
+          };
+
+          return (
+            <div className="relative">
+              
+              {/* --- LANDING SCROLL (STACKING CARDS) --- */}
+              <div className={activePage ? 'hidden' : 'block'}>
+                  
+                  {/* 1. HERO CIRCULAR (Z-Index 1 - Es queda a sota) */}
+                  <HeroStickySection scrollToSection={scrollToSection} />
+
+                  {/* 2. OBRA (Z-Index 2 - Tapa el Hero) */}
+                  <StickySection 
+                      id="section-obra"
+                      index={2}
+                      title={DATA.obra.title}
+                      img={DATA.obra.image}
+                      onClick={() => setActivePage('obra')}
+                  />
+
+                  {/* 3. TRAMA (Z-Index 3) */}
+                  <StickySection 
+                      id="section-trama"
+                      index={3}
+                      title={DATA.trama.title}
+                      img={DATA.trama.image}
+                      onClick={() => setActivePage('trama')}
+                  />
+
+                  {/* 4. PERSONATGES (Z-Index 4) */}
+                  <StickySection 
+                      id="section-personatges"
+                      index={4}
+                      title={DATA.personatges.title}
+                      img={DATA.personatges.image}
+                      onClick={() => setActivePage('personatges')}
+                  />
+
+                   {/* 5. LLEGAT (Z-Index 5) */}
+                   <StickySection 
+                      id="section-llegat"
+                      index={5}
+                      title={DATA.llegat.title}
+                      img={DATA.llegat.image}
+                      onClick={() => setActivePage('llegat')}
+                  />
+                  
+              </div>
+
+              {/* --- DETAIL PAGE OVERLAY --- */}
+              {activePage && (
+                  <DetailPage 
+                    title={activePage === 'obra' ? "L'Obra" : activePage === 'trama' ? "La Trama" : activePage === 'personatges' ? "Personatges" : "Llegat"}
+                    bgImage={activePage === 'obra' ? DATA.obra.image : activePage === 'trama' ? DATA.trama.image : activePage === 'personatges' ? DATA.personatges.image : DATA.llegat.image} 
+                    onClose={() => setActivePage(null)}
+                  >
+                      {renderContent()}
+                  </DetailPage>
+              )}
+
+            </div>
+          );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<HamletPortfolio />);
+    </script>
+</body>
+</html>
