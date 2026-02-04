@@ -74,7 +74,7 @@
             ArrowRight: ({size}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
         };
 
-        // --- DADES ACTUALITZADES I AMPLIADES ---
+        // --- DADES ACTUALITZADES AMB NOVES IMATGES ---
         const DATA = {
           hero: {
             title: "SER O NO SER",
@@ -82,56 +82,108 @@
             image: "https://i.ytimg.com/vi/Oq5HKX1vicM/maxresdefault.jpg" 
           },
           obra: {
-            title: "L'Obra i El Context",
-            image: "https://images.squarespace-cdn.com/content/v1/507dba43c4aabcfd2216a447/1364324128962-O1TL2L81RPHNADLJ6NYZ/play+within+the+play.jpg",
-            description: "Aquest famós soliloqui pertany a 'Hamlet, príncep de Dinamarca', escrita per William Shakespeare. No és només un dubte sobre la vida, sinó una reflexió universal sobre la por a allò desconegut que ens espera després de la mort.",
-            meta: [
-              { label: "Personatge", value: "Príncep Hamlet (Acte III, Esc. 1)" },
-              { label: "Publicació", value: "1603 (Primer Quarto)" },
-              { label: "Ubicació", value: "Castell d'Elsinore (Dinamarca)" },
-              { label: "Atmosfera", value: "Fosca, opressiva i corrupta" }
-            ],
-            context: "L'obra situa l'espectador al Regne de Dinamarca, un estat podrit per la corrupció moral. Elsinore es converteix en una presó mental i física per al protagonista, on l'espionatge i la desconfiança són constants.",
-            themes: [
-              { title: "El Dubte Existencial", desc: "La paràlisi per l'anàlisi. És més noble patir els cops del destí o alçar-se en armes?" },
-              { title: "Venjança vs Justícia", desc: "El conflicte entre el deure filial de venjar el pare i la moralitat de cometre un assassinat." },
-              { title: "Aparença vs Realitat", desc: "La bogeria fingida de Hamlet contra la bogeria real d'Ofèlia. Qui està realment boig?" },
-              { title: "Corrupció Política", desc: "La podridura de l'estat causada pel crim inicial de Claudi infecta tota la cort." }
+            title: "L'Obra",
+            image: "https://images.squarespace-cdn.com/content/v1/5803fba9440243644eee74b3/8821ea0e-d667-4890-a011-e62b71bbe1bc/AdobeStock_277218918+%28wecompress.com%29.jpeg", // Estàtua Hamlet
+            slides: [
+              {
+                title: "El Concepte",
+                desc: "Aquest famós soliloqui pertany a 'Hamlet, príncep de Dinamarca', escrita per William Shakespeare (1601). No és només un dubte sobre la vida, sinó una reflexió universal sobre la por a allò desconegut que ens espera després de la mort.",
+                img: "https://images.squarespace-cdn.com/content/v1/5803fba9440243644eee74b3/8821ea0e-d667-4890-a011-e62b71bbe1bc/AdobeStock_277218918+%28wecompress.com%29.jpeg"
+              },
+              {
+                title: "L'Escenari",
+                desc: "L'obra situa l'espectador al Castell de Kronborg (Elsinore), Dinamarca. Un estat podrit per la corrupció moral. Elsinore es converteix en una presó mental i física per al protagonista.",
+                img: "https://www.visitdenmark.com/files/visitdenmark.com/2020-03/kronborg-castle-2_%C2%A9Daniel%20Overbeck_VisitNordsj%C3%A6lland_1.jpg"
+              },
+              {
+                title: "Els Temes",
+                desc: "Venjança vs Justícia. L'obra explora el conflicte entre el deure filial de venjar el pare i la moralitat de cometre un assassinat.",
+                img: "https://www.teatreauditoridegranollers.cat/img/image/fotos/la-dansa-de-la-venjanca-la-villarroel-teatre-barcelona-15.jpg?w=870&h=580&zc=1&aoe=1&q=80"
+              }
             ]
           },
           trama: {
-            title: "Conflicte i Desenvolupament",
-            image: "https://news.vt.edu/content/dam/news_vt_edu/articles/2014/02/images/022014-cfa-hamlet.jpg",
-            timeline: [
-              { phase: "1. El Detonant (La Causa)", desc: "El conflicte esclata quan l'espectre del Rei mort revela a Hamlet que va ser assassinat pel seu propi germà, Claudi, amb verí a l'orella. Exigeix venjança." },
-              { phase: "2. L'Estratègia (El Dubte)", desc: "Hamlet no sap si el fantasma diu la veritat o és un dimoni. Decideix fingir bogeria per investigar Claudi sense aixecar sospites, però això l'aïlla de tothom." },
-              { phase: "3. El Clímax (La Prova)", desc: "Hamlet utilitza una obra de teatre ('La Ratera') per recrear l'assassinat. La reacció de culpabilitat de Claudi confirma la veritat. Ara Hamlet ha d'actuar." },
-              { phase: "4. L'Empitjorament (L'Error)", desc: "En un moment d'impuls, Hamlet mata Poloni (pare d'Ofèlia) pensant que era el rei. Aquest error provoca la bogeria d'Ofèlia i la fúria venjativa del seu germà Laertes." },
-              { phase: "5. La Catàstrofe (El Final)", desc: "Claudi manipula el conflicte per orquestrar un duel final. Amb espases i copes enverinades, tota la família reial i Laertes moren. Només Horaci sobreviu per explicar-ho." }
+            title: "La Trama",
+            image: "https://crehana-blog.imgix.net/media/filer_public/55/c3/55c372f7-6f33-4551-9b9e-4c34060380be/trama-cuento.jpg",
+            slides: [
+               { 
+                phase: "1. El Detonant", 
+                desc: "El conflicte esclata quan l'espectre del Rei mort revela a Hamlet que va ser assassinat pel seu propi germà, Claudi, amb verí a l'orella. Exigeix venjança.",
+                img: "https://crehana-blog.imgix.net/media/filer_public/55/c3/55c372f7-6f33-4551-9b9e-4c34060380be/trama-cuento.jpg"
+              },
+              { 
+                phase: "2. L'Estratègia", 
+                desc: "Hamlet no sap si el fantasma diu la veritat o és un dimoni. Decideix fingir bogeria per investigar Claudi sense aixecar sospites, però això l'aïlla de tothom.",
+                img: "https://news.vt.edu/content/dam/news_vt_edu/articles/2014/02/images/022014-cfa-hamlet.jpg" // Fallback trama
+              },
+              { 
+                phase: "3. El Clímax", 
+                desc: "Hamlet utilitza una obra de teatre ('La Ratera') per recrear l'assassinat. La reacció de culpabilitat de Claudi confirma la veritat. Ara Hamlet ha d'actuar.",
+                img: "https://images.squarespace-cdn.com/content/v1/507dba43c4aabcfd2216a447/1364324128962-O1TL2L81RPHNADLJ6NYZ/play+within+the+play.jpg"
+              },
+              { 
+                phase: "4. L'Empitjorament", 
+                desc: "En un moment d'impuls, Hamlet mata Poloni (pare d'Ofèlia) pensant que era el rei amagat rere la cortina. Aquest error provoca la bogeria d'Ofèlia i la fúria de Laertes.",
+                img: "https://cdn.culturagenial.com/es/imagenes/hamlet-og.jpg"
+              },
+              { 
+                phase: "5. La Catàstrofe", 
+                desc: "Claudi manipula el conflicte per orquestrar un duel final. Amb espases i copes enverinades, tota la família reial i Laertes moren. Només Horaci sobreviu per explicar-ho.",
+                img: "https://2ontheaisle.wordpress.com/wp-content/uploads/2014/10/hamlet-hsc-10-15-14-201.jpg"
+              }
             ]
           },
           personatges: {
-            title: "Anàlisi de Personatges",
+            title: "Dramatis Personae",
             image: "https://2ontheaisle.wordpress.com/wp-content/uploads/2014/10/hamlet-hsc-10-15-14-201.jpg",
-            list: [
-              { name: "Hamlet", role: "Protagonista", trait: "L'Home Modern", icon: <Icons.Skull size={24}/>, desc: "Representa l'intel·lectual paralitzat pel dubte. La seva tragèdia és pensar massa en un món que demana acció ràpida." },
-              { name: "Claudi", role: "Antagonista", trait: "El Maquiavèl·lic", icon: <Icons.Scroll size={24}/>, desc: "Oncle i padrastre. És l'origen del mal: va matar el seu germà per ambició política i luxúria. Manipulador expert." },
-              { name: "Gertrudis", role: "La Mare", trait: "La Feblesa", icon: <Icons.HeartCrack size={24}/>, desc: "Reina de Dinamarca. Estima el seu fill però la seva ràpida boda amb l'assassí del marit la fa còmplice moral, o potser només ingènua." },
-              { name: "Ofèlia", role: "Víctima", trait: "La Innocència Trencada", icon: <Icons.Feather size={24}/>, desc: "Filla de Poloni. Atrapada entre l'obediència al pare i l'amor per Hamlet. La pressió la porta a la bogeria real i al suïcidi." },
-              { name: "Horaci", role: "L'Aliat", trait: "La Raó", icon: <Icons.Swords size={24}/>, desc: "L'únic amic fidel. Representa l'estabilitat i el seny enmig del caos. La seva missió és mantenir viva la memòria de Hamlet." },
+            slides: [
+              { name: "Hamlet", role: "Protagonista", trait: "L'Home Modern", desc: "Representa l'intel·lectual paralitzat pel dubte. La seva tragèdia és pensar massa en un món que demana acció ràpida.", img: "https://i.ytimg.com/vi/Oq5HKX1vicM/maxresdefault.jpg" },
+              { name: "Claudi", role: "Antagonista", trait: "El Maquiavèl·lic", desc: "Oncle i padrastre. És l'origen del mal: va matar el seu germà per ambició política i luxúria. Manipulador expert.", img: "https://www.savalnet.bo/medios/mm/reportajes/2017/177290r006.png" },
+              { name: "Gertrudis", role: "La Mare", trait: "La Feblesa", desc: "Reina de Dinamarca. Estima el seu fill però la seva ràpida boda amb l'assassí del marit la fa còmplice moral, o potser només ingènua.", img: "https://i.pinimg.com/736x/78/eb/81/78eb81a18203d8a8330b7577287fc5fb.jpg" },
+              { name: "Ofèlia", role: "Víctima", trait: "La Innocència Trencada", desc: "Filla de Poloni. Atrapada entre l'obediència al pare i l'amor per Hamlet. La pressió la porta a la bogeria real i al suïcidi.", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Alexandre_Cabanel%2C_Ophelia.JPG/500px-Alexandre_Cabanel%2C_Ophelia.JPG" },
+              { name: "Horaci", role: "L'Aliat", trait: "La Raó", desc: "L'únic amic fidel. Representa l'estabilitat i el seny enmig del caos. La seva missió és mantenir viva la memòria de Hamlet.", img: "https://upload.wikimedia.org/wikipedia/commons/7/7a/Hamlet_und_Horatio_auf_dem_Friedhof_%28Eug%C3%A8ne_Ferdinand_Victor_Delacroix%29.jpg" },
             ]
           },
           llegat: {
-            title: "Vigència i Adaptacions",
+            title: "Impacte Cultural",
             image: "https://pittsburghquarterly.com/wp-content/uploads/articles/the-public-s-ambitious-hamlet-rewards-on-many-levels.jpg",
-            items: [
-              { title: "El Rei Lleó (Disney)", meta: "Adaptació Animada", desc: "La versió més accessible. Simba (Hamlet) ha de superar la culpa i l'exili per destronar el seu oncle Scar (Claudi), que va matar Mufasa (Rei Hamlet)." },
-              { title: "Sons of Anarchy", meta: "Sèrie de TV", desc: "Trasllada l'estructura shakespeariana a un club de motards. El protagonista descobreix els diaris del pare mort i s'enfronta al nou líder (el seu padrastre)." },
-              { title: "The Northman", meta: "Cinema (2022)", desc: "Recupera la llegenda escandinava original d'Amleth, la font primària de Shakespeare, mostrant la venjança en la seva forma més primitiva i brutal." },
-              { title: "Hamnet (Llibre)", meta: "Novel·la Històrica", desc: "Maggie O'Farrell explora la vida del fill real de Shakespeare, Hamnet, que va morir als 11 anys, suggerint que l'obra va ser una manera de processar el dol." }
+            slides: [
+              { title: "El Rei Lleó (Disney)", meta: "Adaptació Animada", desc: "La versió més accessible. Simba (Hamlet) ha de superar la culpa i l'exili per destronar el seu oncle Scar (Claudi), que va matar Mufasa (Rei Hamlet).", img: "https://ebredigital.cat/wp-content/uploads/2018/12/rey-leon.jpg" },
+              { title: "Hamnet (Llibre)", meta: "Novel·la Històrica", desc: "Maggie O'Farrell explora la vida del fill real de Shakespeare, Hamnet, que va morir als 11 anys, suggerint que l'obra va ser una manera de processar el dol.", img: "https://m.media-amazon.com/images/I/91cr4SdvrAL._UF1000,1000_QL80_.jpg" },
+              { title: "Sons of Anarchy", meta: "Sèrie de TV", desc: "Trasllada l'estructura shakespeariana a un club de motards. El protagonista descobreix els diaris del pare mort i s'enfronta al nou líder (el seu padrastre).", img: "https://i.pinimg.com/originals/26/50/20/265020c900669b7f52554764d2657731.jpg" }, // Imatge genèrica SOA
+              { title: "The Northman", meta: "Cinema (2022)", desc: "Recupera la llegenda escandinava original d'Amleth, la font primària de Shakespeare, mostrant la venjança en la seva forma més primitiva i brutal.", img: "https://i.ytimg.com/vi/oMSdFM12hOw/maxresdefault.jpg" } // Imatge Northman
             ]
           }
         };
+
+        // --- COMPONENTE ESPECIAL: DIAPOSITIVA DE PRESENTACIÓ ---
+        const PresentationSlide = ({ img, title, subtitle, desc, index }) => (
+          <div className="min-h-screen w-full flex items-center justify-center relative overflow-hidden bg-black border-b border-white/5 snap-start">
+            {/* Background Image amb Overlay Fosc */}
+            <div className="absolute inset-0 z-0">
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-black/30 z-10"></div>
+                {img ? (
+                    <img 
+                        src={img} 
+                        className="w-full h-full object-cover opacity-60 transition-transform duration-[10s] hover:scale-110 ease-linear" 
+                        alt={title}
+                    />
+                ) : (
+                    <div className="w-full h-full bg-[#111]"></div>
+                )}
+            </div>
+
+            {/* Content Text */}
+            <div className="relative z-20 container mx-auto px-6 md:px-12 max-w-5xl flex flex-col justify-end pb-20 md:justify-center md:pb-0 h-full animate-fade-up">
+                {subtitle && <span className="text-red-500 font-serif italic text-lg md:text-xl mb-2 block">{subtitle}</span>}
+                <h3 className="text-4xl md:text-7xl font-serif text-white font-bold mb-6 tracking-tight leading-none drop-shadow-xl">{title}</h3>
+                <p className="text-lg md:text-2xl text-gray-200 leading-relaxed max-w-2xl drop-shadow-md font-light bg-black/40 p-4 md:p-0 backdrop-blur-sm md:backdrop-blur-none rounded-lg md:rounded-none">
+                    {desc}
+                </p>
+                {index !== undefined && <span className="absolute bottom-8 right-6 md:right-12 text-6xl text-white/10 font-serif font-bold">{index < 9 ? `0${index+1}` : index+1}</span>}
+            </div>
+          </div>
+        )
 
         // --- COMPONENTE ESPECIAL: HERO CIRCULAR ---
         const HeroStickySection = ({ scrollToSection }) => {
@@ -256,29 +308,23 @@
             );
         };
 
-        // --- COMPONENTE: PÀGINA DE DETALL ---
+        // --- COMPONENTE: PÀGINA DE DETALL (MODAL) ---
         const DetailPage = ({ title, bgImage, onClose, children }) => (
-          <div className="fixed inset-0 z-[100] bg-[#0a0a0a] text-slate-300 overflow-y-auto animate-fade-in">
-            {/* Fondo con Overlay */}
-            <div className="fixed inset-0 pointer-events-none">
-                <div className="absolute inset-0 bg-[#0a0a0a]/90 z-10"></div>
-                {bgImage && <img src={bgImage} alt="" className="w-full h-full object-cover opacity-30" />}
-            </div>
-
-            {/* Header Sticky */}
-            <div className="sticky top-0 z-50 flex justify-between items-center p-6 md:p-8 bg-black/80 backdrop-blur-md border-b border-white/10">
+          <div className="fixed inset-0 z-[100] bg-[#0a0a0a] text-slate-300 overflow-y-auto animate-fade-in no-scrollbar">
+            
+            {/* Header Sticky - Ara més subtil perquè no molesti a les imatges */}
+            <div className="fixed top-0 left-0 w-full z-50 flex justify-between items-center p-6 bg-gradient-to-b from-black/90 to-transparent pointer-events-none">
               <button 
                 onClick={onClose} 
-                className="group flex items-center gap-2 text-white hover:text-red-500 transition-colors uppercase tracking-widest text-sm font-bold"
+                className="pointer-events-auto group flex items-center gap-2 text-white hover:text-red-500 transition-colors uppercase tracking-widest text-sm font-bold bg-black/50 backdrop-blur px-4 py-2 rounded-full border border-white/10"
               >
                 <Icons.ChevronLeft className="group-hover:-translate-x-1 transition-transform" /> Tornar
               </button>
-              <span className="font-serif text-white/50 tracking-widest hidden md:block">{title.toUpperCase()}</span>
+              <span className="font-serif text-white/50 tracking-widest hidden md:block uppercase bg-black/50 backdrop-blur px-4 py-2 rounded-full border border-white/10">{title}</span>
             </div>
 
-            {/* Contingut Scrollable */}
-            <div className="container mx-auto px-6 md:px-12 py-12 md:py-20 max-w-5xl relative z-20 animate-fade-up">
-              <h2 className="text-5xl md:text-7xl font-serif text-white mb-12 tracking-tight border-b border-white/10 pb-8">{title}</h2>
+            {/* Contingut: Ara ocupa tota l'amplada i alçada */}
+            <div className="w-full relative z-20">
               {children}
             </div>
           </div>
@@ -290,7 +336,7 @@
           
           useEffect(() => {
               if (!activePage) {
-                  // No force scroll to top on close so user stays in flow
+                 //
               }
           }, [activePage]);
 
@@ -306,91 +352,68 @@
               switch(activePage) {
                   case 'obra':
                       return (
-                          <div className="grid grid-cols-1 md:grid-cols-12 gap-12">
-                              <div className="md:col-span-4 space-y-8 border-l border-red-900/50 pl-6 h-fit">
-                                {DATA.obra.meta.map((item, idx) => (
-                                  <div key={idx}>
-                                    <h4 className="text-xs uppercase tracking-widest text-gray-500 mb-1">{item.label}</h4>
-                                    <p className="text-white font-serif text-lg">{item.value}</p>
-                                  </div>
-                                ))}
-                              </div>
-                              <div className="md:col-span-8 space-y-8">
-                                <p className="text-2xl font-serif leading-relaxed text-gray-200">{DATA.obra.description}</p>
-                                <div className="p-6 bg-white/5 border-l-2 border-red-800 my-6">
-                                    <p className="text-gray-300 italic">"Ser o no ser, aquesta és la qüestió..."</p>
-                                </div>
-                                <p className="text-gray-400 leading-relaxed max-w-2xl">{DATA.obra.context}</p>
-                                
-                                <h3 className="text-2xl font-serif text-white mt-12 mb-6">Temes Principals</h3>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                  {DATA.obra.themes.map((t, i) => (
-                                    <div key={i} className="bg-white/5 p-6 border border-white/10 hover:border-red-900/40 transition-colors">
-                                      <span className="text-red-800 font-bold mb-2 block">0{i+1}</span>
-                                      <h4 className="text-white font-serif text-lg mb-2">{t.title}</h4>
-                                      <p className="text-sm text-gray-500">{t.desc}</p>
-                                    </div>
-                                  ))}
-                                </div>
-                              </div>
+                          <div className="flex flex-col">
+                             {DATA.obra.slides.map((slide, i) => (
+                                <PresentationSlide 
+                                    key={i}
+                                    title={slide.title}
+                                    desc={slide.desc}
+                                    img={slide.img}
+                                    index={i}
+                                />
+                             ))}
                           </div>
                       );
                   case 'trama':
                       return (
-                          <div className="max-w-4xl border-l border-white/10 ml-4 md:ml-0 space-y-12 pb-20">
-                            {DATA.trama.timeline.map((item, i) => (
-                              <div key={i} className="relative pl-8 md:pl-12 group">
-                                <div className="absolute -left-[5px] top-2 w-3 h-3 bg-black border border-gray-600 rounded-full group-hover:bg-red-600 group-hover:border-red-600 transition-colors"></div>
-                                <h3 className="text-2xl font-serif text-white mb-2">{item.phase}</h3>
-                                <p className="text-gray-400 leading-relaxed text-lg font-light">{item.desc}</p>
-                              </div>
-                            ))}
+                          <div className="flex flex-col">
+                             {DATA.trama.slides.map((slide, i) => (
+                                <PresentationSlide 
+                                    key={i}
+                                    subtitle={`Fase ${i+1}`}
+                                    title={slide.phase.split('. ')[1] || slide.phase} // Truc per treure el numero del títol si cal
+                                    desc={slide.desc}
+                                    img={slide.img}
+                                    index={i}
+                                />
+                             ))}
                           </div>
                       );
                   case 'personatges':
                       return (
-                          <div className="grid grid-cols-1 gap-8">
-                           {DATA.personatges.list.map((char, i) => (
-                             <div key={i} className="group relative bg-[#0f0f0f] border border-white/5 overflow-hidden flex flex-col md:flex-row hover:border-white/20 transition-colors">
-                               <div className="md:w-1/3 bg-black/40 min-h-[200px] relative overflow-hidden">
-                                 {char.img ? (
-                                   <img src={char.img} alt={char.name} className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700" />
-                                 ) : (
-                                   <div className="flex items-center justify-center w-full h-full text-red-900/50 group-hover:text-red-800 transition-colors">
-                                     {char.icon}
-                                   </div>
-                                 )}
-                               </div>
-                               <div className="p-8 md:w-2/3 flex flex-col justify-center">
-                                  <div className="flex items-center gap-3 mb-2">
-                                    <h3 className="text-3xl font-serif text-white">{char.name}</h3>
-                                  </div>
-                                  <p className="text-xs uppercase tracking-widest text-red-800/80 mb-4">{char.role} | {char.trait}</p>
-                                  <p className="text-gray-500 leading-relaxed">{char.desc}</p>
-                               </div>
-                             </div>
-                           ))}
-                         </div>
+                          <div className="flex flex-col">
+                             {DATA.personatges.slides.map((slide, i) => (
+                                <PresentationSlide 
+                                    key={i}
+                                    subtitle={slide.role}
+                                    title={slide.name}
+                                    desc={`${slide.trait}. ${slide.desc}`}
+                                    img={slide.img}
+                                    index={i}
+                                />
+                             ))}
+                          </div>
                       );
                   case 'llegat':
                       return (
-                          <div>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-20">
-                               {DATA.llegat.items.map((item, i) => (
-                                 <div key={i} className="bg-gradient-to-br from-white/5 to-transparent p-8 border-t border-white/10 hover:-translate-y-1 transition-transform">
-                                   <span className="text-red-900/40 text-6xl font-serif font-bold absolute opacity-20 select-none">0{i+1}</span>
-                                   <div className="relative z-10">
-                                     <h4 className="text-2xl font-serif text-white mb-2">{item.title}</h4>
-                                     <span className="inline-block px-2 py-1 bg-white/10 text-xs uppercase tracking-wider text-white mb-4">{item.meta}</span>
-                                     <p className="text-gray-400">{item.desc}</p>
-                                   </div>
-                                 </div>
-                               ))}
-                             </div>
-                             <div className="text-center py-20 border-t border-white/10">
-                                <Icons.Skull size={40} className="mx-auto text-white/20 mb-6" />
-                                <p className="font-serif text-3xl md:text-5xl text-white italic">"The rest is silence."</p>
-                                <p className="mt-4 text-gray-600 text-xs uppercase tracking-widest">Hamlet, Acte V, Escena II</p>
+                           <div className="flex flex-col">
+                             {DATA.llegat.slides.map((slide, i) => (
+                                <PresentationSlide 
+                                    key={i}
+                                    subtitle={slide.meta}
+                                    title={slide.title}
+                                    desc={slide.desc}
+                                    img={slide.img}
+                                    index={i}
+                                />
+                             ))}
+                             {/* Slide Final de Tancament */}
+                             <div className="min-h-screen w-full flex items-center justify-center bg-black relative">
+                                <div className="text-center z-20 p-8">
+                                    <Icons.Skull size={60} className="mx-auto text-white/30 mb-8 animate-pulse-slow" />
+                                    <p className="font-serif text-5xl md:text-7xl text-white italic mb-6">"The rest is silence."</p>
+                                    <p className="text-gray-500 uppercase tracking-widest text-sm">Fi de la presentació</p>
+                                </div>
                              </div>
                           </div>
                       );
@@ -449,7 +472,7 @@
               {activePage && (
                   <DetailPage 
                     title={activePage === 'obra' ? "L'Obra" : activePage === 'trama' ? "La Trama" : activePage === 'personatges' ? "Personatges" : "Llegat"}
-                    bgImage={activePage === 'obra' ? DATA.obra.image : activePage === 'trama' ? DATA.trama.image : activePage === 'personatges' ? DATA.personatges.image : DATA.llegat.image} 
+                    bgImage={null} // Ja no cal fons general perquè cada slide té el seu
                     onClose={() => setActivePage(null)}
                   >
                       {renderContent()}
