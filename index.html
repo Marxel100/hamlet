@@ -23,12 +23,13 @@
             font-family: 'Inter', sans-serif;
             background-color: #050505;
             color: #cbd5e1;
-            overflow-x: hidden;
+            overflow-x: hidden; /* Evitar scroll horizontal global */
         }
         .font-serif {
             font-family: 'Playfair Display', serif;
         }
         
+        /* Ocultar barra de scroll però permetre funcionalitat */
         .no-scrollbar::-webkit-scrollbar {
             display: none;
         }
@@ -50,10 +51,24 @@
             0%, 100% { transform: scale(1); opacity: 0.5; }
             50% { transform: scale(1.05); opacity: 0.2; }
         }
+        /* Moviment suau de càmera per a les imatges de fons */
+        @keyframes kenBurns {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.15); }
+        }
 
         .animate-fade-in { animation: fadeIn 1s ease-out forwards; }
         .animate-fade-up { animation: fadeInUp 0.8s ease-out forwards; }
         .animate-pulse-slow { animation: pulseSlow 4s infinite ease-in-out; }
+        .animate-ken-burns { animation: kenBurns 20s ease-out infinite alternate; }
+        
+        /* Utilitats per Scroll Snap (com diapositives) */
+        .snap-mandatory-y {
+            scroll-snap-type: y mandatory;
+        }
+        .snap-center {
+            scroll-snap-align: center;
+        }
     </style>
 </head>
 <body>
@@ -66,15 +81,11 @@
         const Icons = {
             ChevronLeft: ({className}) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m15 18-6-6 6-6"/></svg>,
             ChevronDown: ({className}) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m6 9 6 6 6-6"/></svg>,
-            Skull: ({size}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="12" r="1"/><circle cx="15" cy="12" r="1"/><path d="M8 20v2h8v-2"/><path d="m12.5 17-.5-1-.5 1h1z"/><path d="M16 20a2 2 0 0 0 1.56-3.25 8 8 0 1 0-11.12 0A2 2 0 0 0 8 20"/></svg>,
-            Scroll: ({size}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M8 17.5a5 5 0 0 1 5-5c2.5 0 5 2.5 5 5v2a2 2 0 1 1-4 0v-2a3 3 0 0 0-3-3 3 3 0 0 0-3 3v2a2 2 0 1 1-4 0v-2a5 5 0 0 1 5-5z"/><path d="M8 2.5a5 5 0 0 1 5 5c2.5 0 5 2.5 5 5v2a2 2 0 1 1-4 0v-2a3 3 0 0 0-3-3 3 3 0 0 0-3 3v2a2 2 0 1 1-4 0v-2a5 5 0 0 1 5-5z"/></svg>,
-            HeartCrack: ({size}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 14c1.49-1.28 3.6-2.34 4.58-4.25a6.11 6.11 0 0 0-1.28-7.9 6.77 6.77 0 0 0-9.28.6l-1 1-1-1a6.77 6.77 0 0 0-9.28-.6 6.1 6.1 0 0 0-1.28 7.9c.98 1.91 3.09 2.97 4.58 4.25L12 21.35z"/><path d="M12 2v20"/><path d="m12 17-6-6"/><path d="m12 14 6-6"/></svg>,
-            Feather: ({size}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" x2="2" y1="8" y2="22"/><line x1="17.5" x2="9" y1="15" y2="15"/></svg>,
-            Swords: ({size}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="14.5 17.5 3 6 3 3 6 3 17.5 14.5"/><line x1="13" x2="19" y1="19" y2="13"/><line x1="16" x2="20" y1="16" y2="20"/><line x1="19" x2="21" y1="21" y2="19"/><polyline points="14.5 6.5 18 3 21 3 21 6 17.5 9.5"/><line x1="5" x2="9" y1="14" y2="18"/><line x1="7" x2="4" y1="17" y2="20"/><line x1="3" x2="5" y1="19" y2="21"/></svg>,
-            ArrowRight: ({size}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            Skull: ({size, className}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="9" cy="12" r="1"/><circle cx="15" cy="12" r="1"/><path d="M8 20v2h8v-2"/><path d="m12.5 17-.5-1-.5 1h1z"/><path d="M16 20a2 2 0 0 0 1.56-3.25 8 8 0 1 0-11.12 0A2 2 0 0 0 8 20"/></svg>,
+            ArrowRight: ({size, className}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
         };
 
-        // --- DADES ACTUALITZADES AMB NOVES IMATGES ---
+        // --- DADES ---
         const DATA = {
           hero: {
             title: "SER O NO SER",
@@ -83,89 +94,89 @@
           },
           obra: {
             title: "L'Obra",
-            image: "https://images.squarespace-cdn.com/content/v1/5803fba9440243644eee74b3/8821ea0e-d667-4890-a011-e62b71bbe1bc/AdobeStock_277218918+%28wecompress.com%29.jpeg", // Estàtua Hamlet
+            image: "https://temporada-alta.com/wp-content/uploads/hamlet_destacada-2.jpg", 
             slides: [
               {
-                title: "El Concepte",
-                desc: "Aquest famós soliloqui pertany a 'Hamlet, príncep de Dinamarca', escrita per William Shakespeare (1601). No és només un dubte sobre la vida, sinó una reflexió universal sobre la por a allò desconegut que ens espera després de la mort.",
-                img: "https://images.squarespace-cdn.com/content/v1/5803fba9440243644eee74b3/8821ea0e-d667-4890-a011-e62b71bbe1bc/AdobeStock_277218918+%28wecompress.com%29.jpeg"
+                title: "Significat",
+                desc: "Shakespeare, 1601. No és només 'ser o no ser'. És la por al que ve després de la mort. Val la pena lluitar o és millor rendir-se?",
+                img: "https://temporada-alta.com/wp-content/uploads/hamlet_destacada-2.jpg"
               },
               {
-                title: "L'Escenari",
-                desc: "L'obra situa l'espectador al Castell de Kronborg (Elsinore), Dinamarca. Un estat podrit per la corrupció moral. Elsinore es converteix en una presó mental i física per al protagonista.",
+                title: "On se situa?",
+                desc: "Al Castell d'Elsinore, Dinamarca. Un lloc fosc, fred i ple d'espies. Per a Hamlet, aquest castell no és casa seva: és una presó.",
                 img: "https://www.visitdenmark.com/files/visitdenmark.com/2020-03/kronborg-castle-2_%C2%A9Daniel%20Overbeck_VisitNordsj%C3%A6lland_1.jpg"
               },
               {
-                title: "Els Temes",
-                desc: "Venjança vs Justícia. L'obra explora el conflicte entre el deure filial de venjar el pare i la moralitat de cometre un assassinat.",
+                title: "El dilema, les desicions",
+                desc: "Dubta si venjar la mort. He de venjar el meu pare matant algú? O això em converteix en un monstre? Aquest és el conflicte que tortura Hamlet. Les seves accions tenen conseqüencies i ha de decidir la seva pròpia moral",
                 img: "https://www.teatreauditoridegranollers.cat/img/image/fotos/la-dansa-de-la-venjanca-la-villarroel-teatre-barcelona-15.jpg?w=870&h=580&zc=1&aoe=1&q=80"
               }
             ]
           },
           trama: {
             title: "La Trama",
-            image: "https://crehana-blog.imgix.net/media/filer_public/55/c3/55c372f7-6f33-4551-9b9e-4c34060380be/trama-cuento.jpg",
+            image: "https://timothyrhaslett.wordpress.com/wp-content/uploads/2014/02/hamletp02_fs.jpg",
             slides: [
                { 
                 phase: "1. El Detonant", 
-                desc: "El conflicte esclata quan l'espectre del Rei mort revela a Hamlet que va ser assassinat pel seu propi germà, Claudi, amb verí a l'orella. Exigeix venjança.",
+                desc: "El fantasma del pare apareix. 'El teu oncle m'ha assassinat'. Li demana venjança. Aquí comença tot.",
                 img: "https://crehana-blog.imgix.net/media/filer_public/55/c3/55c372f7-6f33-4551-9b9e-4c34060380be/trama-cuento.jpg"
               },
               { 
                 phase: "2. L'Estratègia", 
-                desc: "Hamlet no sap si el fantasma diu la veritat o és un dimoni. Decideix fingir bogeria per investigar Claudi sense aixecar sospites, però això l'aïlla de tothom.",
-                img: "https://news.vt.edu/content/dam/news_vt_edu/articles/2014/02/images/022014-cfa-hamlet.jpg" // Fallback trama
+                desc: "Diu la veritat el fantasma? Hamlet es fa el boig per investigar sense aixecar sospites. Tothom es creu que ha perdut el cap.",
+                img: "https://news.vt.edu/content/dam/news_vt_edu/articles/2014/02/images/022014-cfa-hamlet.jpg"
               },
               { 
-                phase: "3. El Clímax", 
-                desc: "Hamlet utilitza una obra de teatre ('La Ratera') per recrear l'assassinat. La reacció de culpabilitat de Claudi confirma la veritat. Ara Hamlet ha d'actuar.",
-                img: "https://images.squarespace-cdn.com/content/v1/507dba43c4aabcfd2216a447/1364324128962-O1TL2L81RPHNADLJ6NYZ/play+within+the+play.jpg"
+                phase: "3. La Prova (El Clímax)", 
+                desc: "El parany: una obra de teatre que recrea l'assassinat. El rei s'espanta i marxa corrents. Culpable confirmat.",
+                img: "https://timothyrhaslett.wordpress.com/wp-content/uploads/2014/02/hamletp02_fs.jpg"
               },
               { 
                 phase: "4. L'Empitjorament", 
-                desc: "En un moment d'impuls, Hamlet mata Poloni (pare d'Ofèlia) pensant que era el rei amagat rere la cortina. Aquest error provoca la bogeria d'Ofèlia i la fúria de Laertes.",
+                desc: "Un error fatal. Hamlet sent un soroll darrere la cortina i ataca. No era el Rei, era el pare de la seva nòvia. Ara tot empitjora.",
                 img: "https://cdn.culturagenial.com/es/imagenes/hamlet-og.jpg"
               },
               { 
-                phase: "5. La Catàstrofe", 
-                desc: "Claudi manipula el conflicte per orquestrar un duel final. Amb espases i copes enverinades, tota la família reial i Laertes moren. Només Horaci sobreviu per explicar-ho.",
-                img: "https://2ontheaisle.wordpress.com/wp-content/uploads/2014/10/hamlet-hsc-10-15-14-201.jpg"
+                phase: "5. El Final", 
+                desc: "Duel final. Espases enverinades i copes amb verí. El pla surt malament i mor tothom: el Rei, la Reina, Hamlet i el seu rival.",
+                img: "https://media.newyorker.com/photos/635c5415cd95e0b0aea28e20/1:1/w_1702,h_1702,c_limit/Shaw-Hamlet.jpg" 
               }
             ]
           },
           personatges: {
-            title: "Dramatis Personae",
-            image: "https://2ontheaisle.wordpress.com/wp-content/uploads/2014/10/hamlet-hsc-10-15-14-201.jpg",
+            title: "Personatges",
+            image: "https://www.cccb.org/rcs_gene/1000X560-Hamlet-and-Horatio.jpg", 
             slides: [
-              { name: "Hamlet", role: "Protagonista", trait: "L'Home Modern", desc: "Representa l'intel·lectual paralitzat pel dubte. La seva tragèdia és pensar massa en un món que demana acció ràpida.", img: "https://i.ytimg.com/vi/Oq5HKX1vicM/maxresdefault.jpg" },
-              { name: "Claudi", role: "Antagonista", trait: "El Maquiavèl·lic", desc: "Oncle i padrastre. És l'origen del mal: va matar el seu germà per ambició política i luxúria. Manipulador expert.", img: "https://www.savalnet.bo/medios/mm/reportajes/2017/177290r006.png" },
-              { name: "Gertrudis", role: "La Mare", trait: "La Feblesa", desc: "Reina de Dinamarca. Estima el seu fill però la seva ràpida boda amb l'assassí del marit la fa còmplice moral, o potser només ingènua.", img: "https://i.pinimg.com/736x/78/eb/81/78eb81a18203d8a8330b7577287fc5fb.jpg" },
-              { name: "Ofèlia", role: "Víctima", trait: "La Innocència Trencada", desc: "Filla de Poloni. Atrapada entre l'obediència al pare i l'amor per Hamlet. La pressió la porta a la bogeria real i al suïcidi.", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Alexandre_Cabanel%2C_Ophelia.JPG/500px-Alexandre_Cabanel%2C_Ophelia.JPG" },
-              { name: "Horaci", role: "L'Aliat", trait: "La Raó", desc: "L'únic amic fidel. Representa l'estabilitat i el seny enmig del caos. La seva missió és mantenir viva la memòria de Hamlet.", img: "https://upload.wikimedia.org/wikipedia/commons/7/7a/Hamlet_und_Horatio_auf_dem_Friedhof_%28Eug%C3%A8ne_Ferdinand_Victor_Delacroix%29.jpg" },
+              { name: "Hamlet", role: "Protagonista", trait: "Pensa massa", desc: "En lloc d'actuar ràpid, dubta de tot. És el primer heroi modern ple d'ansietat.", img: "https://temporada-alta.com/wp-content/uploads/hamlet_destacada-2.jpg" },
+              { name: "Claudi", role: "El dolent", trait: "Manipulador", desc: "Va matar el seu germà per quedar-se amb la corona i la dona. És llest i polític.", img: "https://www.savalnet.bo/medios/mm/reportajes/2017/177290r006.png" },
+              { name: "Gertrudis", role: "La mare", trait: "Ingènua?", desc: "Es casa amb l'assassí del seu marit massa ràpid. Hamlet no sap si ella en sabia res o no.", img: "https://i.pinimg.com/736x/78/eb/81/78eb81a18203d8a8330b7577287fc5fb.jpg" },
+              { name: "Ofèlia", role: "La nòvia tràgica", trait: "Víctima", desc: "El seu pare li prohibeix veure Hamlet, i Hamlet la rebutja cruelment. Acaba boja de veritat.", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Alexandre_Cabanel%2C_Ophelia.JPG/500px-Alexandre_Cabanel%2C_Ophelia.JPG" },
+              { name: "Horaci", role: "El millor amic", trait: "Fidel", desc: "L'únic que no traeix Hamlet. Al final, és qui viu per explicar la història.", img: "https://www.cccb.org/rcs_gene/1000X560-Hamlet-and-Horatio.jpg" },
             ]
           },
           llegat: {
             title: "Impacte Cultural",
             image: "https://pittsburghquarterly.com/wp-content/uploads/articles/the-public-s-ambitious-hamlet-rewards-on-many-levels.jpg",
             slides: [
-              { title: "El Rei Lleó (Disney)", meta: "Adaptació Animada", desc: "La versió més accessible. Simba (Hamlet) ha de superar la culpa i l'exili per destronar el seu oncle Scar (Claudi), que va matar Mufasa (Rei Hamlet).", img: "https://ebredigital.cat/wp-content/uploads/2018/12/rey-leon.jpg" },
-              { title: "Hamnet (Llibre)", meta: "Novel·la Històrica", desc: "Maggie O'Farrell explora la vida del fill real de Shakespeare, Hamnet, que va morir als 11 anys, suggerint que l'obra va ser una manera de processar el dol.", img: "https://m.media-amazon.com/images/I/91cr4SdvrAL._UF1000,1000_QL80_.jpg" },
-              { title: "Sons of Anarchy", meta: "Sèrie de TV", desc: "Trasllada l'estructura shakespeariana a un club de motards. El protagonista descobreix els diaris del pare mort i s'enfronta al nou líder (el seu padrastre).", img: "https://m.media-amazon.com/images/M/MV5BNDAyMzgzOTQ1N15BMl5BanBnXkFtZTgwMjk5NzU2MzE@._V1_.jpg" }, // Imatge genèrica SOA
-              { title: "The Northman", meta: "Cinema (2022)", desc: "Recupera la llegenda escandinava original d'Amleth, la font primària de Shakespeare, mostrant la venjança en la seva forma més primitiva i brutal.", img: "https://i.ytimg.com/vi/oMSdFM12hOw/maxresdefault.jpg" } // Imatge Northman
+              { title: "El Rei Lleó (Disney)", meta: "Dibuixos animats", desc: "Simba és Hamlet. Scar és l'oncle Claudi que mata el pare Mufasa. Una versió per a nens, però amb la mateixa història.", img: "https://ebredigital.cat/wp-content/uploads/2018/12/rey-leon.jpg" },
+              { title: "Hamnet (Llibre)", meta: "La història real", desc: "El fill de Shakespeare es deia Hamnet i va morir amb 11 anys. Es creu que l'obra és la manera que va tenir el pare de plorar el fill.", img: "https://m.media-amazon.com/images/I/91cr4SdvrAL._UF1000,1000_QL80_.jpg" },
+              { title: "Sons of Anarchy", meta: "Sèrie de TV", desc: "Motards en lloc de prínceps. El protagonista descobreix els diaris del seu pare mort i s'enfronta al padrastre que ara mana al club.", img: "https://m.media-amazon.com/images/M/MV5BNDAyMzgzOTQ1N15BMl5BanBnXkFtZTgwMjk5NzU2MzE@._V1_.jpg" }, 
+              { title: "The Northman", meta: "Pel·lícula", desc: "La llegenda víking original d'Amleth. Brutal, bruta i violenta. Així era la història abans que Shakespeare la fes poètica.", img: "https://i.ytimg.com/vi/oMSdFM12hOw/maxresdefault.jpg" } 
             ]
           }
         };
 
-        // --- COMPONENTE ESPECIAL: DIAPOSITIVA DE PRESENTACIÓ ---
-        const PresentationSlide = ({ img, title, subtitle, desc, index }) => (
-          <div className="min-h-screen w-full flex items-center justify-center relative overflow-hidden bg-black border-b border-white/5 snap-start">
-            {/* Background Image amb Overlay Fosc */}
-            <div className="absolute inset-0 z-0">
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-black/30 z-10"></div>
+        // --- COMPONENT: DIAPOSITIVA DE PRESENTACIÓ (Amb Scroll Snap) ---
+        const PresentationSlide = ({ img, title, subtitle, desc, index, total }) => (
+          <div className="h-screen w-full flex items-center justify-center relative overflow-hidden bg-black border-b border-white/5 snap-center shrink-0">
+            {/* Background Image amb efecte Ken Burns */}
+            <div className="absolute inset-0 z-0 overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-black/20 z-10"></div>
                 {img ? (
                     <img 
                         src={img} 
-                        className="w-full h-full object-cover opacity-60 transition-transform duration-[10s] hover:scale-110 ease-linear" 
+                        className="w-full h-full object-cover opacity-70 animate-ken-burns origin-center" 
                         alt={title}
                     />
                 ) : (
@@ -174,18 +185,34 @@
             </div>
 
             {/* Content Text */}
-            <div className="relative z-20 container mx-auto px-6 md:px-12 max-w-5xl flex flex-col justify-end pb-20 md:justify-center md:pb-0 h-full animate-fade-up">
-                {subtitle && <span className="text-red-500 font-serif italic text-lg md:text-xl mb-2 block">{subtitle}</span>}
-                <h3 className="text-4xl md:text-7xl font-serif text-white font-bold mb-6 tracking-tight leading-none drop-shadow-xl">{title}</h3>
-                <p className="text-lg md:text-2xl text-gray-200 leading-relaxed max-w-2xl drop-shadow-md font-light bg-black/40 p-4 md:p-0 backdrop-blur-sm md:backdrop-blur-none rounded-lg md:rounded-none">
-                    {desc}
-                </p>
-                {index !== undefined && <span className="absolute bottom-8 right-6 md:right-12 text-6xl text-white/10 font-serif font-bold">{index < 9 ? `0${index+1}` : index+1}</span>}
+            <div className="relative z-20 container mx-auto px-6 md:px-12 max-w-5xl flex flex-col justify-end pb-32 md:justify-center md:pb-0 h-full">
+                <div className="animate-fade-up">
+                    {subtitle && <span className="text-red-500 font-serif italic text-lg md:text-xl mb-3 block tracking-wider">{subtitle}</span>}
+                    <h3 className="text-5xl md:text-8xl font-serif text-white font-bold mb-8 tracking-tighter leading-[0.9] drop-shadow-2xl">{title}</h3>
+                    <div className="bg-black/40 backdrop-blur-md p-6 md:p-8 rounded-lg border-l-4 border-red-600 max-w-2xl">
+                         <p className="text-xl md:text-2xl text-gray-100 leading-relaxed drop-shadow-md font-light">
+                            {desc}
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            {/* Número de Slide */}
+            <div className="absolute bottom-8 right-8 text-white/20 font-serif font-bold text-6xl md:text-8xl select-none z-10">
+                {index < 9 ? `0${index+1}` : index+1}
+            </div>
+            
+            {/* Indicador de Progrés (Barra) */}
+            <div className="absolute bottom-0 left-0 w-full h-1 bg-white/10 z-30">
+                <div 
+                    className="h-full bg-red-600 transition-all duration-500"
+                    style={{ width: `${((index + 1) / total) * 100}%` }}
+                ></div>
             </div>
           </div>
         )
 
-        // --- COMPONENTE ESPECIAL: HERO CIRCULAR ---
+        // --- COMPONENT: HERO CIRCULAR (Portada) ---
         const HeroStickySection = ({ scrollToSection }) => {
             return (
                  <div 
@@ -193,16 +220,15 @@
                     className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden bg-[#050505] shadow-2xl transition-transform duration-700"
                     style={{ zIndex: 1 }}
                 >
-                    {/* Contingut Central */}
                     <div className="relative w-full h-full flex flex-col items-center justify-center animate-fade-in">
                         
-                         {/* Círculos Decorativos (Fons) */}
+                         {/* Círculos Decorativos */}
                         <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
                             <div className="w-[300px] h-[300px] md:w-[600px] md:h-[600px] border border-white/5 rounded-full animate-pulse-slow"></div>
                             <div className="absolute w-[500px] h-[500px] md:w-[800px] md:h-[800px] border border-white/5 rounded-full opacity-30"></div>
                         </div>
 
-                        {/* Título Principal */}
+                        {/* Título */}
                         <div className="relative z-20 text-center mb-6 md:mb-10">
                              <h1 className="text-5xl md:text-8xl font-serif text-white tracking-widest drop-shadow-2xl opacity-90">
                               SER O NO SER
@@ -212,10 +238,8 @@
                             </p>
                         </div>
 
-                        {/* Contenidor Imatge Central + Botons Satèl·lit */}
+                        {/* Imatge + Satèl·lits */}
                         <div className="relative z-30 flex items-center justify-center">
-                            
-                            {/* Imagen Central Rodona */}
                             <div className="relative w-56 h-56 md:w-80 md:h-80 rounded-full overflow-hidden border border-white/10 shadow-[0_0_100px_-20px_rgba(255,255,255,0.15)] group cursor-pointer transition-all duration-700 hover:scale-105 z-20">
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent z-10"></div>
                                 <img 
@@ -225,44 +249,26 @@
                                 />
                             </div>
 
-                            {/* --- BOTONS FLOTANTS (Satèl·lits) --- */}
-                            
-                            <button
-                                onClick={() => scrollToSection('section-obra')}
-                                className="absolute -left-16 -top-12 md:left-[-180px] md:top-0 text-right group flex flex-col items-end gap-1 z-30"
-                            >
+                            {/* Botons Flotants */}
+                            <button onClick={() => scrollToSection('section-obra')} className="absolute -left-16 -top-12 md:left-[-180px] md:top-0 text-right group flex flex-col items-end gap-1 z-30">
                                 <span className="text-4xl font-serif text-white/20 group-hover:text-white transition-colors">01</span>
                                 <span className="text-xs md:text-sm uppercase tracking-[0.2em] text-white/60 group-hover:text-red-500 transition-colors">L'Obra</span>
                             </button>
-
-                            <button
-                                onClick={() => scrollToSection('section-trama')}
-                                className="absolute -left-16 -bottom-12 md:left-[-160px] md:bottom-0 text-right group flex flex-col items-end gap-1 z-30"
-                            >
+                            <button onClick={() => scrollToSection('section-trama')} className="absolute -left-16 -bottom-12 md:left-[-160px] md:bottom-0 text-right group flex flex-col items-end gap-1 z-30">
                                 <span className="text-xs md:text-sm uppercase tracking-[0.2em] text-white/60 group-hover:text-red-500 transition-colors">La Trama</span>
                                 <span className="text-4xl font-serif text-white/20 group-hover:text-white transition-colors">02</span>
                             </button>
-
-                            <button
-                                onClick={() => scrollToSection('section-personatges')}
-                                className="absolute -right-16 -top-12 md:right-[-200px] md:top-0 text-left group flex flex-col items-start gap-1 z-30"
-                            >
+                            <button onClick={() => scrollToSection('section-personatges')} className="absolute -right-16 -top-12 md:right-[-200px] md:top-0 text-left group flex flex-col items-start gap-1 z-30">
                                 <span className="text-4xl font-serif text-white/20 group-hover:text-white transition-colors">03</span>
                                 <span className="text-xs md:text-sm uppercase tracking-[0.2em] text-white/60 group-hover:text-red-500 transition-colors">Personatges</span>
                             </button>
-
-                             <button
-                                onClick={() => scrollToSection('section-llegat')}
-                                className="absolute -right-16 -bottom-12 md:right-[-140px] md:bottom-0 text-left group flex flex-col items-start gap-1 z-30"
-                            >
+                             <button onClick={() => scrollToSection('section-llegat')} className="absolute -right-16 -bottom-12 md:right-[-140px] md:bottom-0 text-left group flex flex-col items-start gap-1 z-30">
                                 <span className="text-xs md:text-sm uppercase tracking-[0.2em] text-white/60 group-hover:text-red-500 transition-colors">Llegat</span>
                                 <span className="text-4xl font-serif text-white/20 group-hover:text-white transition-colors">04</span>
                             </button>
-
                         </div>
 
-                        
-                        {/* Scroll Hint */}
+                        {/* Hint */}
                         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 text-white/30 animate-bounce flex flex-col items-center gap-2 pointer-events-none">
                             <span className="text-[10px] uppercase tracking-[0.3em]">Fes Scroll</span>
                             <Icons.ChevronDown className="w-4 h-4" />
@@ -272,7 +278,7 @@
             );
         };
 
-        // --- COMPONENTE: STICKY SECTION ESTÀNDARD ---
+        // --- COMPONENT: STICKY SECTION (Targeta Menú) ---
         const StickySection = ({ id, title, img, index, onClick, subtitle }) => {
             return (
                 <div 
@@ -280,13 +286,11 @@
                     className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden border-t border-white/10 shadow-2xl transition-transform duration-700 bg-[#050505]"
                     style={{ zIndex: index + 10 }}
                 >
-                    {/* Background Image with Overlay */}
                     <div className="absolute inset-0 z-0">
                          <div className="absolute inset-0 bg-black/60 z-10 hover:bg-black/40 transition-colors duration-700"></div>
-                         <img src={img} alt={title} className="w-full h-full object-cover scale-105" />
+                         <img src={img} alt={title} className="w-full h-full object-cover scale-105 animate-ken-burns" />
                     </div>
 
-                    {/* Content */}
                     <div className="relative z-20 text-center px-6 max-w-4xl animate-fade-up">
                         {subtitle && <p className="text-red-500 font-serif italic text-xl md:text-2xl mb-4">{subtitle}</p>}
                         <h2 className="text-5xl md:text-8xl font-serif text-white font-bold mb-8 tracking-tighter drop-shadow-lg">{title}</h2>
@@ -300,7 +304,6 @@
                         </button>
                     </div>
 
-                    {/* Number Indicator */}
                     <div className="absolute bottom-10 right-10 z-20 text-white/10 font-serif text-6xl md:text-8xl font-bold select-none">
                         0{index - 1} 
                     </div>
@@ -308,23 +311,23 @@
             );
         };
 
-        // --- COMPONENTE: PÀGINA DE DETALL (MODAL) ---
-        const DetailPage = ({ title, bgImage, onClose, children }) => (
-          <div className="fixed inset-0 z-[100] bg-[#0a0a0a] text-slate-300 overflow-y-auto animate-fade-in no-scrollbar">
+        // --- COMPONENT: PÀGINA DE DETALL (Contenidor Scroll Snap) ---
+        const DetailPage = ({ title, onClose, children }) => (
+          <div className="fixed inset-0 z-[100] bg-[#0a0a0a] text-slate-300 animate-fade-in">
             
-            {/* Header Sticky - Ara més subtil perquè no molesti a les imatges */}
-            <div className="fixed top-0 left-0 w-full z-50 flex justify-between items-center p-6 bg-gradient-to-b from-black/90 to-transparent pointer-events-none">
+            {/* Header Sticky */}
+            <div className="fixed top-0 left-0 w-full z-50 flex justify-between items-center p-6 pointer-events-none">
               <button 
                 onClick={onClose} 
-                className="pointer-events-auto group flex items-center gap-2 text-white hover:text-red-500 transition-colors uppercase tracking-widest text-sm font-bold bg-black/50 backdrop-blur px-4 py-2 rounded-full border border-white/10"
+                className="pointer-events-auto group flex items-center gap-2 text-white hover:text-red-500 transition-colors uppercase tracking-widest text-sm font-bold bg-black/40 backdrop-blur-md px-5 py-2 rounded-full border border-white/10 hover:border-red-500/50"
               >
                 <Icons.ChevronLeft className="group-hover:-translate-x-1 transition-transform" /> Tornar
               </button>
-              <span className="font-serif text-white/50 tracking-widest hidden md:block uppercase bg-black/50 backdrop-blur px-4 py-2 rounded-full border border-white/10">{title}</span>
+              <span className="font-serif text-white/80 tracking-widest hidden md:block uppercase bg-black/40 backdrop-blur-md px-5 py-2 rounded-full border border-white/10">{title}</span>
             </div>
 
-            {/* Contingut: Ara ocupa tota l'amplada i alçada */}
-            <div className="w-full relative z-20">
+            {/* Contenidor Scroll Snap */}
+            <div className="w-full h-full overflow-y-scroll snap-mandatory-y no-scrollbar scroll-smooth">
               {children}
             </div>
           </div>
@@ -334,88 +337,49 @@
         function HamletPortfolio() {
           const [activePage, setActivePage] = useState(null); 
           
-          useEffect(() => {
-              if (!activePage) {
-                 //
-              }
-          }, [activePage]);
-
-          // Funció per fer scroll suau a les targetes sticky
           const scrollToSection = (id) => {
               const element = document.getElementById(id);
-              if (element) {
-                  element.scrollIntoView({ behavior: 'smooth' });
-              }
+              if (element) element.scrollIntoView({ behavior: 'smooth' });
           };
 
           const renderContent = () => {
               switch(activePage) {
                   case 'obra':
-                      return (
-                          <div className="flex flex-col">
-                             {DATA.obra.slides.map((slide, i) => (
-                                <PresentationSlide 
-                                    key={i}
-                                    title={slide.title}
-                                    desc={slide.desc}
-                                    img={slide.img}
-                                    index={i}
-                                />
-                             ))}
-                          </div>
-                      );
+                      return DATA.obra.slides.map((slide, i) => (
+                        <PresentationSlide key={i} {...slide} index={i} total={DATA.obra.slides.length} />
+                      ));
                   case 'trama':
-                      return (
-                          <div className="flex flex-col">
-                             {DATA.trama.slides.map((slide, i) => (
-                                <PresentationSlide 
-                                    key={i}
-                                    subtitle={`Fase ${i+1}`}
-                                    title={slide.phase.split('. ')[1] || slide.phase} // Truc per treure el numero del títol si cal
-                                    desc={slide.desc}
-                                    img={slide.img}
-                                    index={i}
-                                />
-                             ))}
-                          </div>
-                      );
+                      return DATA.trama.slides.map((slide, i) => (
+                        <PresentationSlide key={i} {...slide} 
+                            subtitle={`Fase ${i+1}`} 
+                            title={slide.phase.split('. ')[1] || slide.phase} 
+                            index={i} total={DATA.trama.slides.length} 
+                        />
+                      ));
                   case 'personatges':
-                      return (
-                          <div className="flex flex-col">
-                             {DATA.personatges.slides.map((slide, i) => (
-                                <PresentationSlide 
-                                    key={i}
-                                    subtitle={slide.role}
-                                    title={slide.name}
-                                    desc={`${slide.trait}. ${slide.desc}`}
-                                    img={slide.img}
-                                    index={i}
-                                />
-                             ))}
-                          </div>
-                      );
+                      return DATA.personatges.slides.map((slide, i) => (
+                        <PresentationSlide key={i} {...slide} 
+                            subtitle={slide.role} 
+                            title={slide.name} 
+                            desc={`${slide.trait}. ${slide.desc}`} 
+                            index={i} total={DATA.personatges.slides.length} 
+                        />
+                      ));
                   case 'llegat':
                       return (
-                           <div className="flex flex-col">
-                             {DATA.llegat.slides.map((slide, i) => (
-                                <PresentationSlide 
-                                    key={i}
-                                    subtitle={slide.meta}
-                                    title={slide.title}
-                                    desc={slide.desc}
-                                    img={slide.img}
-                                    index={i}
-                                />
-                             ))}
-                             {/* Slide Final de Tancament */}
-                             <div className="min-h-screen w-full flex items-center justify-center bg-black relative">
-                                <div className="text-center z-20 p-8">
-                                    <Icons.Skull size={60} className="mx-auto text-white/30 mb-8 animate-pulse-slow" />
-                                    <p className="font-serif text-5xl md:text-7xl text-white italic mb-6">"The rest is silence."</p>
-                                    <p className="text-gray-500 uppercase tracking-widest text-sm">Fi de la presentació</p>
+                        <>
+                           {DATA.llegat.slides.map((slide, i) => (
+                                <PresentationSlide key={i} {...slide} subtitle={slide.meta} index={i} total={DATA.llegat.slides.length} />
+                           ))}
+                           {/* Slide Final */}
+                           <div className="h-screen w-full flex items-center justify-center bg-black relative snap-center">
+                                <div className="text-center z-20 p-8 animate-fade-up">
+                                    <Icons.Skull size={80} className="mx-auto text-white/30 mb-8 animate-pulse-slow" />
+                                    <p className="font-serif text-5xl md:text-8xl text-white italic mb-6">"I la resta és silenci."</p>
+                                    <button onClick={() => setActivePage(null)} className="text-red-500 hover:text-white transition-colors uppercase tracking-widest text-sm border-b border-red-500 pb-1">Tancar Presentació</button>
                                 </div>
-                             </div>
-                          </div>
+                           </div>
+                        </>
                       );
                   default: return null;
               }
@@ -424,61 +388,24 @@
           return (
             <div className="relative">
               
-              {/* --- LANDING SCROLL (STACKING CARDS) --- */}
+              {/* LANDING SCROLL */}
               <div className={activePage ? 'hidden' : 'block'}>
-                  
-                  {/* 1. HERO CIRCULAR (Z-Index 1 - Es queda a sota) */}
                   <HeroStickySection scrollToSection={scrollToSection} />
-
-                  {/* 2. OBRA (Z-Index 2 - Tapa el Hero) */}
-                  <StickySection 
-                      id="section-obra"
-                      index={2}
-                      title={DATA.obra.title}
-                      img={DATA.obra.image}
-                      onClick={() => setActivePage('obra')}
-                  />
-
-                  {/* 3. TRAMA (Z-Index 3) */}
-                  <StickySection 
-                      id="section-trama"
-                      index={3}
-                      title={DATA.trama.title}
-                      img={DATA.trama.image}
-                      onClick={() => setActivePage('trama')}
-                  />
-
-                  {/* 4. PERSONATGES (Z-Index 4) */}
-                  <StickySection 
-                      id="section-personatges"
-                      index={4}
-                      title={DATA.personatges.title}
-                      img={DATA.personatges.image}
-                      onClick={() => setActivePage('personatges')}
-                  />
-
-                   {/* 5. LLEGAT (Z-Index 5) */}
-                   <StickySection 
-                      id="section-llegat"
-                      index={5}
-                      title={DATA.llegat.title}
-                      img={DATA.llegat.image}
-                      onClick={() => setActivePage('llegat')}
-                  />
-                  
+                  <StickySection id="section-obra" index={2} title={DATA.obra.title} img={DATA.obra.image} onClick={() => setActivePage('obra')} />
+                  <StickySection id="section-trama" index={3} title={DATA.trama.title} img={DATA.trama.image} onClick={() => setActivePage('trama')} />
+                  <StickySection id="section-personatges" index={4} title={DATA.personatges.title} img={DATA.personatges.image} onClick={() => setActivePage('personatges')} />
+                  <StickySection id="section-llegat" index={5} title={DATA.llegat.title} img={DATA.llegat.image} onClick={() => setActivePage('llegat')} />
               </div>
 
-              {/* --- DETAIL PAGE OVERLAY --- */}
+              {/* DETAIL PAGE OVERLAY */}
               {activePage && (
                   <DetailPage 
                     title={activePage === 'obra' ? "L'Obra" : activePage === 'trama' ? "La Trama" : activePage === 'personatges' ? "Personatges" : "Llegat"}
-                    bgImage={null} // Ja no cal fons general perquè cada slide té el seu
                     onClose={() => setActivePage(null)}
                   >
                       {renderContent()}
                   </DetailPage>
               )}
-
             </div>
           );
         }
